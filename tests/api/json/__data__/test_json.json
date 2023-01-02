@@ -1,0 +1,111 @@
+{
+    "test_get_status__200": {
+        "url": "/status",
+        "method": "GET",
+        "status": 200,
+        "response": "OK"
+    },
+    "test_get_items__200_empty": {
+        "url": "/items",
+        "method": "GET",
+        "status": 200,
+        "response": {
+            "items": []
+        }
+    },
+    "test_get_items__200_one_item": {
+        "url": "/items",
+        "method": "GET",
+        "status": 200,
+        "response": {
+            "items": [{
+                "id": 1,
+                "name": "item1"
+            }]
+        }
+    },
+    "test_get_items__200_with_custom_verifier": {
+        "url": "/items",
+        "method": "GET",
+        "status": 200,
+        "response": {
+            "items": [
+                {
+                    "id": null,
+                    "name": "item1"
+                },
+                {
+                    "id": null,
+                    "name": "item2"
+                }
+            ]
+        }
+    },
+    "test_create_item__200": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "item1"
+        },
+        "response": {
+            "id": 1,
+            "name": "item1"
+        }
+    },
+    "test_create_item__200_with_external_files": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": "file::request.json",
+        "response": "file::response.json"
+    },
+    "test_create_item__200_with_test_data_modifier": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "response": {
+            "id": 1,
+            "name": "blah"
+        }
+    },
+    "test_create_item__200_no_name": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": null
+        },
+        "response": {
+            "id": null,
+            "name": null
+        }
+    },
+    "test_get_item__200": {
+        "url": "/items/1",
+        "method": "GET",
+        "status": 200,
+        "response": {
+            "id": 1,
+            "name": "item1"
+        }
+    },
+    "test_get_item__404": {
+        "url": "/items/1",
+        "method": "GET",
+        "status": 404
+    },
+    "test_delete_item__200": {
+        "url": "/items/{item_id}",
+        "method": "DELETE",
+        "status": 200,
+        "response": {
+            "items": []
+        }
+    },
+    "test_delete_item__404": {
+        "url": "/items/{item_id}",
+        "method": "DELETE",
+        "status": 404
+    }
+}
