@@ -3,14 +3,14 @@ import string
 import random
 import ujson
 from typing import Union, Any, Dict, cast
-from fastapi import FastAPI
-from fastapi.responses import Response, PlainTextResponse
+from fastapi import FastAPI, Header
+from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel
 
 from rest_api_tester.test import TestCase, TestData, TestResult
 from rest_api_tester.runner import TestCaseRunner
 
-from ..fastapi_test_client import FastAPITestClient
+from tests.api.fastapi_test_client import FastAPITestClient
 
 
 class Item(BaseModel):
@@ -26,6 +26,24 @@ class TestJSON(TestCase):
         @self.app.get('/status', response_class=PlainTextResponse)
         def get_status() -> Any:
             return 'OK'
+
+        @self.app.get('/protected', response_class=PlainTextResponse)
+        def get_protected(secret: str = Header()) -> Any:
+            if secret != 's3cr3t!':
+                return Response(status_code=401)
+            return PlainTextResponse(
+                content='OK',
+                headers={
+                    'test': 't3st'
+                }
+            )
+
+        @self.app.get('/google', response_class=RedirectResponse)
+        def get_google() -> Any:
+            return RedirectResponse(
+                url='https://google.com',
+                status_code=301
+            )
 
         @self.app.get('/items')
         def get_items() -> Any:
@@ -81,6 +99,27 @@ class TestJSON(TestCase):
         result = self.runner.run(
             path_to_test_cases='test_json.json',
             test_name='test_get_status__200'
+        )
+        self.verify_test_result(result=result)
+
+    def test_get_protected__200(self) -> None:
+        result = self.runner.run(
+            path_to_test_cases='test_json.json',
+            test_name='test_get_protected__200'
+        )
+        self.verify_test_result(result=result)
+
+    def test_get_protected__401(self) -> None:
+        result = self.runner.run(
+            path_to_test_cases='test_json.json',
+            test_name='test_get_protected__401'
+        )
+        self.verify_test_result(result=result)
+
+    def test_get_google__301(self) -> None:
+        result = self.runner.run(
+            path_to_test_cases='test_json.json',
+            test_name='test_get_google__301'
         )
         self.verify_test_result(result=result)
 

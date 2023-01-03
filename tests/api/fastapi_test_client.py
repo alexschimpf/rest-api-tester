@@ -14,12 +14,14 @@ class FastAPITestClient(BaseTestClient):
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
         return self.fastapi_test_client.get(
             url=url,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -29,6 +31,7 @@ class FastAPITestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -36,6 +39,7 @@ class FastAPITestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -45,6 +49,7 @@ class FastAPITestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -52,6 +57,7 @@ class FastAPITestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -61,6 +67,7 @@ class FastAPITestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -68,6 +75,7 @@ class FastAPITestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -76,12 +84,14 @@ class FastAPITestClient(BaseTestClient):
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
         return self.fastapi_test_client.delete(
             url=url,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )

@@ -90,7 +90,8 @@ class TestCaseRunner:
                 url=test_data.url,
                 headers=test_data.headers,
                 cookies=test_data.cookies,
-                timeout=self.request_timeout
+                timeout=self.request_timeout,
+                allow_redirects=test_data.allow_redirects
             )
         elif method == 'POST':
             response = self.client.post(
@@ -98,7 +99,8 @@ class TestCaseRunner:
                 headers=test_data.headers,
                 cookies=test_data.cookies,
                 data=cast(str, test_data.request_data),
-                timeout=self.request_timeout
+                timeout=self.request_timeout,
+                allow_redirects=test_data.allow_redirects
             )
         elif method == 'PUT':
             response = self.client.put(
@@ -106,7 +108,8 @@ class TestCaseRunner:
                 headers=test_data.headers,
                 cookies=test_data.cookies,
                 data=cast(str, test_data.request_data),
-                timeout=self.request_timeout
+                timeout=self.request_timeout,
+                allow_redirects=test_data.allow_redirects
             )
         elif method == 'PATCH':
             response = self.client.patch(
@@ -114,14 +117,16 @@ class TestCaseRunner:
                 headers=test_data.headers,
                 cookies=test_data.cookies,
                 data=cast(str, test_data.request_data),
-                timeout=self.request_timeout
+                timeout=self.request_timeout,
+                allow_redirects=test_data.allow_redirects
             )
         elif method == 'DELETE':
             response = self.client.delete(
                 url=test_data.url,
                 headers=test_data.headers,
                 cookies=test_data.cookies,
-                timeout=self.request_timeout
+                timeout=self.request_timeout,
+                allow_redirects=test_data.allow_redirects
             )
         else:
             raise ValueError('Unsupported HTTP method')

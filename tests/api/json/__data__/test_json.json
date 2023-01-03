@@ -5,6 +5,38 @@
         "status": 200,
         "response": "OK"
     },
+    "test_get_protected__200": {
+        "url": "/protected",
+        "method": "GET",
+        "status": 200,
+        "headers": {
+            "secret": "s3cr3t!"
+        },
+        "response": "OK",
+        "response_headers": {
+            "test": "t3st",
+            "content-length": "2",
+            "content-type": "text/plain; charset=utf-8"
+        }
+    },
+    "test_get_protected__401": {
+        "url": "/protected",
+        "method": "GET",
+        "status": 401,
+        "headers": {
+            "secret": "invalid"
+        }
+    },
+    "test_get_google__301": {
+        "url": "/google",
+        "method": "GET",
+        "allow_redirects": false,
+        "status": 301,
+        "response_headers": {
+            "content-length": "0",
+            "location": "https://google.com"
+        }
+    },
     "test_get_items__200_empty": {
         "url": "/items",
         "method": "GET",

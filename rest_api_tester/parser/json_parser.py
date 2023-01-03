@@ -20,6 +20,14 @@ def parse(
     assert isinstance(test_case.get('url'), str)
     assert isinstance(test_case.get('status'), int)
     assert isinstance(test_case.get('method'), str)
+    if 'cookies' in test_case:
+        assert isinstance(test_case['cookies'], dict)
+    if 'headers' in test_case:
+        assert isinstance(test_case['headers'], dict)
+    if 'response_headers' in test_case:
+        assert isinstance(test_case['response_headers'], dict)
+    if 'allow_redirects' in test_case:
+        assert isinstance(test_case['allow_redirects'], bool)
 
     request = test_case.get('request')
     if request:
@@ -43,7 +51,7 @@ def parse(
                 with open(response_file_path) as f:
                     response = str(f.read().strip())
         else:
-            raise Exception('Request format is invalid')
+            raise Exception('Response format is invalid')
 
     return TestData(
         name=test_name,
@@ -54,5 +62,6 @@ def parse(
         request_data=request,
         expected_status=test_case['status'],
         expected_response=response,
-        expected_headers=test_case.get('response_headers')
+        expected_headers=test_case.get('response_headers'),
+        allow_redirects=test_case.get('allow_redirects', True)
     )

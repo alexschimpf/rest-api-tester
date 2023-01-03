@@ -109,5 +109,8 @@ venv.bak/
 .vscode/
 .idea/
 
-# Mac
+# mac
 .DS_STORE
+
+# personal
+TODO

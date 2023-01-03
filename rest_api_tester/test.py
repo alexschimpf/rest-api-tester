@@ -12,6 +12,7 @@ class TestData:
     name: str
     url: str
     method: str
+    allow_redirects: bool
     headers: Dict[str, Any]
     cookies: Dict[str, Any]
     request_data: Union[str, None]
@@ -69,7 +70,7 @@ class TestCase(unittest.TestCase):
         expected_headers = result.test_data.expected_headers
         if expected_headers:
             actual_headers = result.response.headers
-            self.assertDictEqual(expected_headers, actual_headers)
+            self.assertDictEqual(expected_headers, dict(actual_headers))
 
     def default_verifier(self, result: TestResult) -> None:
         response_content_type = result.response.headers.get('Content-Type')

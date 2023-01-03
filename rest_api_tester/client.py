@@ -11,6 +11,7 @@ class BaseTestClient:
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -21,6 +22,7 @@ class BaseTestClient:
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -31,6 +33,7 @@ class BaseTestClient:
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -41,6 +44,7 @@ class BaseTestClient:
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -50,6 +54,7 @@ class BaseTestClient:
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -65,6 +70,7 @@ class TestClient(BaseTestClient):
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -72,6 +78,7 @@ class TestClient(BaseTestClient):
         return requests.get(
             url=url,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -81,6 +88,7 @@ class TestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -89,6 +97,7 @@ class TestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -98,6 +107,7 @@ class TestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -106,6 +116,7 @@ class TestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -115,6 +126,7 @@ class TestClient(BaseTestClient):
         url: str,
         data: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -123,6 +135,7 @@ class TestClient(BaseTestClient):
             url=url,
             data=data,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
@@ -131,6 +144,7 @@ class TestClient(BaseTestClient):
         self,
         url: str,
         timeout: int,
+        allow_redirects: bool,
         headers: Union[Dict[str, Any], None] = None,
         cookies: Union[Dict[str, Any], None] = None
     ) -> requests.Response:
@@ -138,6 +152,7 @@ class TestClient(BaseTestClient):
         return requests.delete(
             url=url,
             timeout=timeout,
+            allow_redirects=allow_redirects,
             headers=headers,
             cookies=cookies
         )
