@@ -19,6 +19,7 @@ class TestData:
     expected_status: int
     expected_response: Union[str, None]
     expected_headers: Union[Dict[str, Any], None]
+    __test__ = False
 
 
 @dataclass
@@ -26,6 +27,7 @@ class TestResult:
 
     response: Response
     test_data: TestData
+    __test__ = False
 
 
 class TestCase(unittest.TestCase):

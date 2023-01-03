@@ -8,7 +8,7 @@ setup(
     version='0.1.0',
     author='Alex Schimpf',
     author_email='aschimpf1@gmail.com',
-    description='Rest API tester for Python web applications',
+    description='Rest API tester',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/alexschimpf/python-rest-api-tester',

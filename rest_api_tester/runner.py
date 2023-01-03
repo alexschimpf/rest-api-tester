@@ -7,6 +7,8 @@ from .parser import json_parser
 
 class TestCaseRunner:
 
+    __test__ = False
+
     def __init__(
         self,
         client: BaseTestClient,
