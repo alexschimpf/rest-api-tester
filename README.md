@@ -2,6 +2,7 @@
 
 ## Installation
 `pip install rest-api-tester`
+- This is available for Python3.6+
 
 ## About
 `rest-api-tester` makes it easy to create REST API tests for your APIs.
@@ -90,6 +91,5 @@ class TestSomething(TestCase):
 - Websockets
 
 ## Examples
-You can find more advanced API test examples [here](https://github.com/alexschimpf/python-rest-api-tester/tree/main/tests/api).
-
-
+- You can find more advanced API test examples [here](https://github.com/alexschimpf/python-rest-api-tester/tree/main/tests/api).
+- Note: The examples provided are run against a FastAPI server, and thus need Python3.7+ to run
