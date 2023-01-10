@@ -1,8 +1,8 @@
 from typing import Any, Union, Dict, Callable, cast
 
-from .client import BaseTestClient
-from .test import TestResult, TestData
-from .parser import json_parser
+from rest_api_tester.client import BaseTestClient
+from rest_api_tester.test import TestResult, TestData
+from rest_api_tester.parser import json_parser
 
 
 class TestCaseRunner:

@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='rest_api_tester',
-    version='0.1.0',
+    version='0.1.1',
     author='Alex Schimpf',
     author_email='aschimpf1@gmail.com',
     description='Rest API tester',
@@ -13,7 +13,10 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/alexschimpf/python-rest-api-tester',
     package_data={'rest_api_tester': ['py.typed']},
-    packages=['rest_api_tester'],
+    packages=[
+        'rest_api_tester',
+        'rest_api_tester.parser'
+    ],
     classifiers=[
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

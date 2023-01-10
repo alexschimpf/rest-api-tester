@@ -1,7 +1,7 @@
 import os
 import ujson
 
-from ..test import TestData
+from rest_api_tester.test import TestData
 
 EXTERNAL_FILE_PREFIX = 'file::'
 
