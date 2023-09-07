@@ -36,7 +36,7 @@ def parse(
         elif isinstance(request, str):
             if request.startswith(EXTERNAL_FILE_PREFIX):
                 request_file_path = os.path.join(path_to_data, request[len(EXTERNAL_FILE_PREFIX):])
-                with open(request_file_path) as f:
+                with open(request_file_path, 'r') as f:
                     request = str(f.read().strip())
         else:
             raise Exception('Request format is invalid')
@@ -48,7 +48,7 @@ def parse(
         elif isinstance(response, str):
             if response.startswith(EXTERNAL_FILE_PREFIX):
                 response_file_path = os.path.join(path_to_data, response[len(EXTERNAL_FILE_PREFIX):])
-                with open(response_file_path) as f:
+                with open(response_file_path, 'r') as f:
                     response = str(f.read().strip())
         else:
             raise Exception('Response format is invalid')
@@ -69,5 +69,6 @@ def parse(
         expected_status=test_case['status'],
         expected_response=response,
         expected_headers=test_case.get('response_headers'),
-        allow_redirects=test_case.get('allow_redirects', True)
+        allow_redirects=test_case.get('allow_redirects', True),
+        file_path=test_cases_file_path
     )

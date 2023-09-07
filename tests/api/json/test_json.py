@@ -22,6 +22,7 @@ class TestJSON(TestCase):
     def setUp(self) -> None:
         self.items: dict[Any, Any] = {}
         self.app = FastAPI()
+        self.update_expectation_on_fail = True
 
         @self.app.get('/status', response_class=PlainTextResponse)
         def get_status() -> Any:
