@@ -53,11 +53,17 @@ def parse(
         else:
             raise Exception('Response format is invalid')
 
+    headers = test_case.get('headers')
+    if headers:
+        headers = {
+            key.lower(): value for key, value in headers.items()
+        }
+
     return TestData(
         name=test_name,
         url=test_case['url'],
         method=test_case['method'],
-        headers=test_case.get('headers'),
+        headers=headers,
         cookies=test_case.get('cookies'),
         request_data=request,
         expected_status=test_case['status'],

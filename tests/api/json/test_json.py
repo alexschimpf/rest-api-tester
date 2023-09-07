@@ -2,7 +2,7 @@ import os
 import string
 import random
 import ujson
-from typing import Union, Any, Dict, cast
+from typing import Union, Any, cast
 from fastapi import FastAPI, Header
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel
@@ -20,7 +20,7 @@ class Item(BaseModel):
 class TestJSON(TestCase):
 
     def setUp(self) -> None:
-        self.items: Dict[Any, Any] = {}
+        self.items: dict[Any, Any] = {}
         self.app = FastAPI()
 
         @self.app.get('/status', response_class=PlainTextResponse)
@@ -197,7 +197,7 @@ class TestJSON(TestCase):
             result.test_data = self._modify_expected_response(
                 test_data=result.test_data,
                 id=max(self.items.keys()),
-                name=result.response.json()['name']
+                name=ujson.loads(result.response.text)['name']
             )
             self.verify_test_result(result=result)
         finally:
@@ -243,7 +243,7 @@ class TestJSON(TestCase):
 
     def custom_verifier(self, result: TestResult) -> None:
         expected_response = ujson.loads(cast(str, result.test_data.expected_response))
-        actual_response = result.response.json()
+        actual_response = ujson.loads(result.response.text)
 
         # Only check names
         self.assertListEqual(
@@ -252,7 +252,7 @@ class TestJSON(TestCase):
         )
 
     @staticmethod
-    def _modify_expected_response(test_data: TestData, **kwargs: Dict[str, Any]) -> TestData:
+    def _modify_expected_response(test_data: TestData, **kwargs: dict[str, Any]) -> TestData:
         expected_response_dict = ujson.loads(cast(str, test_data.expected_response))
         expected_response_dict.update(**kwargs)
         test_data.expected_response = ujson.dumps(expected_response_dict)

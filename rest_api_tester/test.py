@@ -1,9 +1,10 @@
-from typing import Any, Callable, Dict, Union
-from requests import Response
+from typing import Any, Callable, Union
 from dataclasses import dataclass
 import unittest
 import pprint
 import ujson
+
+from rest_api_tester.client.response_data import ResponseData
 
 
 @dataclass
@@ -13,19 +14,19 @@ class TestData:
     url: str
     method: str
     allow_redirects: bool
-    headers: Dict[str, Any]
-    cookies: Dict[str, Any]
+    headers: dict[str, Any]
+    cookies: dict[str, Any]
     request_data: Union[str, None]
     expected_status: int
     expected_response: Union[str, None]
-    expected_headers: Union[Dict[str, Any], None]
+    expected_headers: Union[dict[str, Any], None]
     __test__ = False
 
 
 @dataclass
 class TestResult:
 
-    response: Response
+    response: ResponseData
     test_data: TestData
     __test__ = False
 
@@ -42,11 +43,13 @@ class TestCase(unittest.TestCase):
     ) -> None:
         """
         Verifies that the test case result matches what is expected
-        :param result: the test case result returned from `TestCaseRunner.run()`
+
+        :param result:
+            The test case result returned from `TestCaseRunner.run()`
         :param verifier:
-            - a function used to verify the response body
-            - this function should typically be defined as a test case instance method so
-            - `self.assert...` methods can be utilized
+            A function used to verify the response body.
+            This function should typically be defined as a test case instance method so `self.assert...` methods
+            can be utilized. If not provided, the `default_verifier` function from this class will be used.
         """
 
         # Check status
@@ -55,17 +58,18 @@ class TestCase(unittest.TestCase):
         expected_status = result.response.status_code
         expected_response = result.test_data.expected_response
         message = '\n'.join([
+            '',
             'Expected Response:',
             self._format_response(response=expected_response),
             '',
             'Actual Response:',
             self._format_response(response=actual_response),
+            ''
         ])
         self.assertEqual(expected_status, actual_status, message)
 
         # Check response body
-        if not verifier:
-            verifier = self.default_verifier
+        verifier = verifier or self.default_verifier
         verifier(result)
 
         # Check response headers
@@ -75,12 +79,12 @@ class TestCase(unittest.TestCase):
             self.assertDictEqual(expected_headers, dict(actual_headers))
 
     def default_verifier(self, result: TestResult) -> None:
-        response_content_type = result.response.headers.get('Content-Type')
+        response_content_type = result.response.headers.get('content-type')
 
         expected_response = result.test_data.expected_response
         if expected_response:
             if response_content_type == 'application/json':
-                actual_response = result.response.json()
+                actual_response = ujson.loads(result.response.text)
                 if isinstance(actual_response, list):
                     self.assertListEqual(ujson.loads(expected_response), actual_response)
                 elif isinstance(actual_response, dict):
