@@ -1,9 +1,9 @@
-import jinja2
 from typing import Any, Union, Callable, cast
 
 from rest_api_tester.client.base_client import BaseTestClient
 from rest_api_tester.test import TestResult, TestData
-from rest_api_tester.parser import json_parser
+from rest_api_tester.parser.base import ParserProto
+from rest_api_tester.parser.json_jinja_parser import JsonJinjaParser
 
 
 class TestCaseRunner:
@@ -39,9 +39,10 @@ class TestCaseRunner:
         path_to_test_cases: str,
         test_name: str,
         url_params: Union[dict[str, Any], None] = None,
-        file_parser: Callable[[str, str, str, Union[dict[str, Any], None]], TestData] = json_parser.parse,
+        file_parser: ParserProto = JsonJinjaParser,
         test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
-        template_vars: Union[dict[str, Any], None] = None
+        request_template_vars: Union[dict[str, Any], None] = None,
+        response_template_vars: Union[dict[str, Any], None] = None
     ) -> TestResult:
         """
         Runs a test and returns a TestResult
@@ -55,13 +56,14 @@ class TestCaseRunner:
             Used to fill in test URLs dynamically.
             For example, if URL='/items/{item_id}' and url_params={'item_id': 1}, the URL will become '/items/1'.
         :param file_parser:
-            This function parses a test cases file and returns a TestData object for a given test case.
-            It takes the following arguments: (path_to_data, path_to_test_cases, test_name).
+            This class parses a test cases file and returns a TestData object for a given test case
         :param test_data_modifier:
             Function to modify the test data before the test is run.
             This is done after `template_vars` is processed.
-        :param template_vars:
-            These key/values will be rendered into the test's Jinja2 template
+        :param request_template_vars:
+            These key/values will be rendered into the test's request template
+        :param response_template_vars:
+            These key/values will be rendered into the test's response template
         """
 
         test_data = self._get_test_data(
@@ -70,7 +72,8 @@ class TestCaseRunner:
             url_params=url_params,
             file_parser=file_parser,
             test_data_modifier=test_data_modifier,
-            template_vars=template_vars
+            request_template_vars=request_template_vars,
+            response_template_vars=response_template_vars
         )
         return self._run(test_data=test_data)
 
@@ -79,11 +82,18 @@ class TestCaseRunner:
         path_to_test_cases: str,
         test_name: str,
         url_params: Union[dict[str, Any], None] = None,
-        file_parser: Callable[[str, str, str, Union[dict[str, Any], None]], TestData] = json_parser.parse,
+        file_parser: ParserProto = JsonJinjaParser,
         test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
-        template_vars: Union[dict[str, Any], None] = None
+        request_template_vars: Union[dict[str, Any], None] = None,
+        response_template_vars: Union[dict[str, Any], None] = None
     ) -> TestData:
-        test_data = file_parser(self.path_to_data, path_to_test_cases, test_name, template_vars)
+        test_data = file_parser.parse(
+            path_to_data=self.path_to_data,
+            path_to_test_cases=path_to_test_cases,
+            test_name=test_name,
+            request_template_vars=request_template_vars,
+            response_template_vars=response_template_vars
+        )
 
         test_data.headers = test_data.headers or {}
         if self.default_content_type and 'content-type' not in test_data.headers:

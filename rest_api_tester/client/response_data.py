@@ -1,3 +1,4 @@
+import ujson
 from dataclasses import dataclass
 from typing import Any, Union
 
@@ -9,3 +10,7 @@ class ResponseData:
     headers: dict[str, Any]
     status_code: int
     extra: Union[dict[str, Any], None] = None
+
+    @property
+    def json(self) -> Any:
+        return ujson.loads(self.text)

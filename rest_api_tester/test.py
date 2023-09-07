@@ -5,6 +5,7 @@ import pprint
 import ujson
 
 from rest_api_tester.client.response_data import ResponseData
+from rest_api_tester.config import Config
 
 
 @dataclass
@@ -22,6 +23,18 @@ class TestData:
     expected_headers: Union[dict[str, Any], None]
     file_path: str
     __test__ = False
+
+    @property
+    def request_data_json(self) -> Any:
+        if not self.request_data:
+            return None
+        return ujson.loads(self.request_data)
+
+    @property
+    def expected_response_json(self) -> Any:
+        if not self.expected_response:
+            return None
+        return ujson.loads(self.expected_response)
 
 
 @dataclass
@@ -57,10 +70,15 @@ class TestCase(unittest.TestCase):
             If True, expectation files will automatically be updated when tests fail.
             This can be useful if you want to quickly set up your test expectations.
             This can also be set for the entire test case instance via the instance
-            variable `update_expectations_on_fail`.
+            variable `update_expectations_on_fail` or globally via `Config.UPDATE_EXPECTATIONS_ON_FAIL`.
+            Note: This may corrupt expectation files if tests are run in parallel or if tests are abruptly killed.
         """
 
-        update_expectations_on_fail = update_expectations_on_fail or self.update_expectations_on_fail
+        update_expectations_on_fail = any((
+            update_expectations_on_fail,
+            self.update_expectations_on_fail,
+            Config.UPDATE_EXPECTATIONS_ON_FAIL
+        ))
 
         actual_response = result.response.text
         actual_status = result.test_data.expected_status
@@ -91,11 +109,26 @@ class TestCase(unittest.TestCase):
                 self.assertDictEqual(expected_headers, dict(actual_headers), 'Headers do not match')
         except Exception:
             if update_expectations_on_fail:
-                self.update_expectation(result=result)
+                self._update_expectation(result=result)
             raise
 
+    def default_verifier(self, result: TestResult) -> None:
+        response_content_type = result.response.headers.get('content-type')
+
+        expected_response = result.test_data.expected_response
+        if expected_response:
+            if response_content_type == 'application/json':
+                actual_response = result.response.json
+                if isinstance(actual_response, list):
+                    self.assertListEqual(ujson.loads(expected_response), actual_response)
+                elif isinstance(actual_response, dict):
+                    self.assertDictEqual(ujson.loads(expected_response), actual_response)
+            else:
+                actual_response = result.response.text
+                self.assertEqual(expected_response, actual_response)
+
     @staticmethod
-    def update_expectation(result: TestResult) -> None:
+    def _update_expectation(result: TestResult) -> None:
         actual_response = result.response.text
         actual_status = result.response.status_code
         actual_headers = result.response.headers
@@ -120,21 +153,6 @@ class TestCase(unittest.TestCase):
 
         with open(result.test_data.file_path, 'w+') as f:
             f.write(ujson.dumps(expectations, escape_forward_slashes=False, indent=4) + '\n')
-
-    def default_verifier(self, result: TestResult) -> None:
-        response_content_type = result.response.headers.get('content-type')
-
-        expected_response = result.test_data.expected_response
-        if expected_response:
-            if response_content_type == 'application/json':
-                actual_response = ujson.loads(result.response.text)
-                if isinstance(actual_response, list):
-                    self.assertListEqual(ujson.loads(expected_response), actual_response)
-                elif isinstance(actual_response, dict):
-                    self.assertDictEqual(ujson.loads(expected_response), actual_response)
-            else:
-                actual_response = result.response.text
-                self.assertEqual(expected_response, actual_response)
 
     @staticmethod
     def _format_response(response: Union[str, None]) -> Any:
