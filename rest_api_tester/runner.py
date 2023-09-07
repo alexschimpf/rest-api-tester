@@ -1,3 +1,4 @@
+import jinja2
 from typing import Any, Union, Callable, cast
 
 from rest_api_tester.client.base_client import BaseTestClient
@@ -38,8 +39,9 @@ class TestCaseRunner:
         path_to_test_cases: str,
         test_name: str,
         url_params: Union[dict[str, Any], None] = None,
-        file_parser: Callable[[str, str, str], TestData] = json_parser.parse,
-        test_data_modifier: Union[Callable[[TestData], TestData], None] = None
+        file_parser: Callable[[str, str, str, Union[dict[str, Any], None]], TestData] = json_parser.parse,
+        test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
+        template_vars: Union[dict[str, Any], None] = None
     ) -> TestResult:
         """
         Runs a test and returns a TestResult
@@ -56,7 +58,10 @@ class TestCaseRunner:
             This function parses a test cases file and returns a TestData object for a given test case.
             It takes the following arguments: (path_to_data, path_to_test_cases, test_name).
         :param test_data_modifier:
-            Function to modify the test data before the test is run
+            Function to modify the test data before the test is run.
+            This is done after `template_vars` is processed.
+        :param template_vars:
+            These key/values will be rendered into the test's Jinja2 template
         """
 
         test_data = self._get_test_data(
@@ -64,7 +69,8 @@ class TestCaseRunner:
             test_name=test_name,
             url_params=url_params,
             file_parser=file_parser,
-            test_data_modifier=test_data_modifier
+            test_data_modifier=test_data_modifier,
+            template_vars=template_vars
         )
         return self._run(test_data=test_data)
 
@@ -73,10 +79,11 @@ class TestCaseRunner:
         path_to_test_cases: str,
         test_name: str,
         url_params: Union[dict[str, Any], None] = None,
-        file_parser: Callable[[str, str, str], TestData] = json_parser.parse,
-        test_data_modifier: Union[Callable[[TestData], TestData], None] = None
+        file_parser: Callable[[str, str, str, Union[dict[str, Any], None]], TestData] = json_parser.parse,
+        test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
+        template_vars: Union[dict[str, Any], None] = None
     ) -> TestData:
-        test_data = file_parser(self.path_to_data, path_to_test_cases, test_name)
+        test_data = file_parser(self.path_to_data, path_to_test_cases, test_name, template_vars)
 
         test_data.headers = test_data.headers or {}
         if self.default_content_type and 'content-type' not in test_data.headers:

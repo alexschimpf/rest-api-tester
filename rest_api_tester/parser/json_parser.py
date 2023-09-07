@@ -1,5 +1,7 @@
 import os
 import ujson
+import jinja2
+from typing import Any, Union
 
 from rest_api_tester.test import TestData
 
@@ -9,13 +11,17 @@ EXTERNAL_FILE_PREFIX = 'file::'
 def parse(
     path_to_data: str,
     path_to_test_cases: str,
-    test_name: str
+    test_name: str,
+    template_vars: Union[dict[str, Any], None]
 ) -> TestData:
     test_cases_file_path = os.path.join(path_to_data, path_to_test_cases)
     with open(test_cases_file_path, 'r') as f:
         test_cases = ujson.loads(f.read())
 
     test_case = test_cases[test_name]
+    if template_vars:
+        test_case_template = jinja2.Environment().from_string(ujson.dumps(test_case))
+        test_case = ujson.loads(test_case_template.render(**template_vars))
 
     assert isinstance(test_case.get('url'), str)
     assert isinstance(test_case.get('status'), int)

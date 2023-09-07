@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from rest_api_tester.test import TestCase, TestData, TestResult
 from rest_api_tester.runner import TestCaseRunner
 
-from tests.api.fastapi_test_client import FastAPITestClient
+from tests.api.fastapi.fastapi_test_client import FastAPITestClient
 
 
 class Item(BaseModel):
@@ -22,7 +22,7 @@ class TestJSON(TestCase):
     def setUp(self) -> None:
         self.items: dict[Any, Any] = {}
         self.app = FastAPI()
-        self.update_expectation_on_fail = True
+        self.update_expectations_on_fail = False
 
         @self.app.get('/status', response_class=PlainTextResponse)
         def get_status() -> Any:
@@ -98,35 +98,38 @@ class TestJSON(TestCase):
 
     def test_get_status__200(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
-            test_name='test_get_status__200'
+            path_to_test_cases='test_fastapi.jinja',
+            test_name='test_get_status__200',
+            template_vars={
+                'response_str': 'OK'
+            }
         )
         self.verify_test_result(result=result)
 
     def test_get_protected__200(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_get_protected__200'
         )
         self.verify_test_result(result=result)
 
     def test_get_protected__401(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_get_protected__401'
         )
         self.verify_test_result(result=result)
 
     def test_get_google__301(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_get_google__301'
         )
         self.verify_test_result(result=result)
 
     def test_get_items__200_empty(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_get_items__200_empty'
         )
         self.verify_test_result(result=result)
@@ -135,7 +138,7 @@ class TestJSON(TestCase):
         self.items[1] = "item1"
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_get_items__200_one_item'
             )
             self.verify_test_result(result=result)
@@ -147,7 +150,7 @@ class TestJSON(TestCase):
         self.items[2] = "item2"
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_get_items__200_with_custom_verifier',
             )
             self.verify_test_result(result=result, verifier=self.custom_verifier)
@@ -157,7 +160,7 @@ class TestJSON(TestCase):
     def test_create_item__200(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_create_item__200'
             )
             self.verify_test_result(result=result)
@@ -167,7 +170,7 @@ class TestJSON(TestCase):
     def test_create_item__200_with_external_files(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_create_item__200_with_external_files'
             )
             self.verify_test_result(result=result)
@@ -181,7 +184,7 @@ class TestJSON(TestCase):
 
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_create_item__200_with_test_data_modifier',
                 test_data_modifier=modifier
             )
@@ -192,7 +195,7 @@ class TestJSON(TestCase):
     def test_create_item__200_no_name(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_create_item__200_no_name'
             )
             result.test_data = self._modify_expected_response(
@@ -208,7 +211,7 @@ class TestJSON(TestCase):
         self.items[1] = "item1"
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_get_item__200'
             )
             self.verify_test_result(result=result)
@@ -217,7 +220,7 @@ class TestJSON(TestCase):
 
     def test_get_item__404(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_get_item__404'
         )
         self.verify_test_result(result=result)
@@ -226,7 +229,7 @@ class TestJSON(TestCase):
         self.items[1] = "item1"
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.jinja',
                 test_name='test_delete_item__200',
                 url_params={'item_id': 1}
             )
@@ -236,7 +239,7 @@ class TestJSON(TestCase):
 
     def test_delete_item__404(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.jinja',
             test_name='test_delete_item__404',
             url_params={'item_id': 1}
         )
