@@ -1,15 +1,15 @@
 import ujson
 from dataclasses import dataclass
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 
 @dataclass
 class ResponseData:
 
     text: str
-    headers: dict[str, Any]
+    headers: Dict[str, Any]
     status_code: int
-    extra: Union[dict[str, Any], None] = None
+    extra: Union[Dict[str, Any], None] = None
 
     @property
     def json(self) -> Any:

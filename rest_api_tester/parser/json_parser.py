@@ -1,23 +1,23 @@
 import os
 import ujson
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 from rest_api_tester.test import TestData
-from rest_api_tester.parser.base import ParserProto
+from rest_api_tester.parser.base_parser import BaseParser
 from rest_api_tester import utils
 
 EXTERNAL_FILE_PREFIX = 'file::'
 
 
-class JSONParser(ParserProto):
+class JSONParser(BaseParser):
 
     @staticmethod
     def parse(
         path_to_data: str,
         path_to_test_cases: str,
         test_name: str,
-        request_json_modifiers: Union[dict[str, Any], None],
-        response_json_modifiers: Union[dict[str, Any], None]
+        request_json_modifiers: Union[Dict[str, Any], None],
+        response_json_modifiers: Union[Dict[str, Any], None]
     ) -> TestData:
         test_cases_file_path = os.path.join(path_to_data, path_to_test_cases)
         with open(test_cases_file_path, 'r') as f:

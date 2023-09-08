@@ -1,5 +1,5 @@
 import httpx
-from typing import Union, Any
+from typing import Union, Any, Dict
 from fastapi import FastAPI, testclient
 
 from rest_api_tester.client.base_client import BaseTestClient
@@ -16,8 +16,8 @@ class FastAPITestClient(BaseTestClient):
         url: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         response = self.fastapi_test_client.get(
             url=url,
@@ -34,8 +34,8 @@ class FastAPITestClient(BaseTestClient):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         response = self.fastapi_test_client.post(
             url=url,
@@ -53,8 +53,8 @@ class FastAPITestClient(BaseTestClient):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         response = self.fastapi_test_client.put(
             url=url,
@@ -72,8 +72,8 @@ class FastAPITestClient(BaseTestClient):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         response = self.fastapi_test_client.patch(
             url=url,
@@ -90,8 +90,8 @@ class FastAPITestClient(BaseTestClient):
         url: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         response = self.fastapi_test_client.delete(
             url=url,

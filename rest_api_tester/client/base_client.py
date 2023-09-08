@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Union, Dict
 from abc import ABC, abstractmethod
 
 from rest_api_tester.client.response_data import ResponseData
@@ -12,8 +12,8 @@ class BaseTestClient(ABC):
         url: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         ...
 
@@ -24,8 +24,8 @@ class BaseTestClient(ABC):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         ...
 
@@ -36,8 +36,8 @@ class BaseTestClient(ABC):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         ...
 
@@ -48,8 +48,8 @@ class BaseTestClient(ABC):
         data: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         ...
 
@@ -59,7 +59,7 @@ class BaseTestClient(ABC):
         url: str,
         timeout: int,
         allow_redirects: bool,
-        headers: Union[dict[str, Any], None] = None,
-        cookies: Union[dict[str, Any], None] = None
+        headers: Union[Dict[str, Any], None] = None,
+        cookies: Union[Dict[str, Any], None] = None
     ) -> ResponseData:
         ...

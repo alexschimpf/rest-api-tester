@@ -6,9 +6,12 @@ with open('README.md', 'r') as readme_file:
 with open('requirements.txt', 'r') as requirements_file:
     requirements_list = requirements_file.readlines()
 
+with open('VERSION', 'r') as version_file:
+    version = version_file.read().strip()
+
 setup(
     name='rest_api_tester',
-    version='0.2.0',
+    version=version,
     author='Alex Schimpf',
     author_email='aschimpf1@gmail.com',
     description='Rest API tester',
@@ -22,10 +25,12 @@ setup(
         'rest_api_tester.client'
     ],
     classifiers=[
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11'
     ],
     install_requires=requirements_list,
-    python_requires='>=3.9'
+    python_requires='>=3.7'
 )

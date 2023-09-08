@@ -2,7 +2,7 @@ import os
 import string
 import random
 import ujson
-from typing import Union, Any, cast
+from typing import Union, Any, Dict
 from fastapi import FastAPI, Header
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel
@@ -20,7 +20,7 @@ class Item(BaseModel):
 class TestJSON(TestCase):
 
     def setUp(self) -> None:
-        self.items: dict[Any, Any] = {}
+        self.items: Dict[Any, Any] = {}
         self.app = FastAPI()
         self.update_expectations_on_fail = False
 
@@ -213,6 +213,7 @@ class TestJSON(TestCase):
                     'name': 'alex'
                 },
                 response_json_modifiers={
+                    'id': 1,
                     'name': 'alex'
                 }
             )
@@ -279,7 +280,7 @@ class TestJSON(TestCase):
         )
 
     @staticmethod
-    def _modify_expected_response(test_data: TestData, **kwargs: dict[str, Any]) -> TestData:
+    def _modify_expected_response(test_data: TestData, **kwargs: Dict[str, Any]) -> TestData:
         expected_response_json = test_data.expected_response_json
         expected_response_json.update(**kwargs)
         test_data.expected_response = ujson.dumps(expected_response_json)

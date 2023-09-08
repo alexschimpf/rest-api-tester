@@ -1,8 +1,8 @@
-from typing import Any, Union, Callable, cast
+from typing import Any, Union, Callable, cast, Dict, Type
 
 from rest_api_tester.client.base_client import BaseTestClient
 from rest_api_tester.test import TestResult, TestData
-from rest_api_tester.parser.base import ParserProto
+from rest_api_tester.parser.base_parser import BaseParser
 from rest_api_tester.parser.json_parser import JSONParser
 
 
@@ -38,11 +38,11 @@ class TestCaseRunner:
         self,
         path_to_test_cases: str,
         test_name: str,
-        url_params: Union[dict[str, Any], None] = None,
-        file_parser: ParserProto = JSONParser,
+        url_params: Union[Dict[str, Any], None] = None,
+        file_parser: Type[BaseParser] = JSONParser,
         test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
-        request_json_modifiers: Union[dict[str, Any], None] = None,
-        response_json_modifiers: Union[dict[str, Any], None] = None
+        request_json_modifiers: Union[Dict[str, Any], None] = None,
+        response_json_modifiers: Union[Dict[str, Any], None] = None
     ) -> TestResult:
         """
         Runs a test and returns a TestResult
@@ -87,11 +87,11 @@ class TestCaseRunner:
         self,
         path_to_test_cases: str,
         test_name: str,
-        url_params: Union[dict[str, Any], None] = None,
-        file_parser: ParserProto = JSONParser,
+        url_params: Union[Dict[str, Any], None] = None,
+        file_parser: Type[BaseParser] = JSONParser,
         test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
-        request_json_modifiers: Union[dict[str, Any], None] = None,
-        response_json_modifiers: Union[dict[str, Any], None] = None
+        request_json_modifiers: Union[Dict[str, Any], None] = None,
+        response_json_modifiers: Union[Dict[str, Any], None] = None
     ) -> TestData:
         test_data = file_parser.parse(
             path_to_data=self.path_to_data,

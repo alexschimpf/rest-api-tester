@@ -1,4 +1,4 @@
-from typing import Any, Callable, Union
+from typing import Any, Callable, Union, Dict, List
 from dataclasses import dataclass
 import unittest
 import pprint
@@ -16,12 +16,12 @@ class TestData:
     url: str
     method: str
     allow_redirects: bool
-    headers: dict[str, Any]
-    cookies: dict[str, Any]
+    headers: Dict[str, Any]
+    cookies: Dict[str, Any]
     request_data: Union[str, None]
     expected_status: int
     expected_response: Union[str, None]
-    expected_headers: Union[dict[str, Any], None]
+    expected_headers: Union[Dict[str, Any], None]
     file_path: str
     __test__ = False
 
@@ -56,7 +56,7 @@ class TestCase(unittest.TestCase):
         self,
         result: TestResult,
         verifier: Union[Callable[[TestResult], None], None] = None,
-        excluded_response_paths: Union[list[str], None] = None,
+        excluded_response_paths: Union[List[str], None] = None,
         update_expectations_on_fail: bool = False
     ) -> None:
         """

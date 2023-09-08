@@ -2,11 +2,14 @@
 
 ## Installation
 `pip install rest-api-tester`
-- This is available for Python3.6+
+- This is available for Python3.7+
 
 ## About
 `rest-api-tester` makes it easy to create REST API tests for your APIs.
-Though this tool is written in Python, your APIs need not be!
+Though this tool is written in Python, your APIs need not be. This library provides a consistent way to write API tests 
+and perform the necessary validation. It is primarily built to handle traditional, JSON-based APIs, although it has
+the ability to handle other API formats. Also... `rest-api-tester` can auto-update your expectation files for you when 
+tests fail!
 
 ## Tutorial
 
@@ -44,6 +47,7 @@ from rest_api_tester.test import TestCase
 from rest_api_tester.runner import TestCaseRunner
 
 class TestSomething(TestCase):
+    
     def setUp(self) -> None:
         test_client = TestClient(base_url='https://myapp.com:5000')
         path_to_data = os.path.join(os.path.dirname(__file__), '__data__')
@@ -57,7 +61,7 @@ class TestSomething(TestCase):
 4. Create your first API test
 ```python
 class TestSomething(TestCase):
-
+    
     ...
 
     def test_create_something(self) -> None:
@@ -68,22 +72,63 @@ class TestSomething(TestCase):
         self.verify_test_result(result=result)
 ```
 
-## Other Details
-- There is a JSON file parser provided out of the box that can be used to parse JSON test case files
-  - If needed, you can write your own parser for another format... this is quite trivial
-  - Your custom parser function should be provided as an argument to `TestCaseRunner.run`
-- Requests and responses can be referenced as an external file as shown [here](https://github.com/alexschimpf/python-rest-api-tester/blob/main/tests/api/json/__data__/test_json.json#L88)
-  - The file path is relative to `TestCaseRunner.path_to_data`
-- Test case data can be augmented dynamically before tests are run and also before test results are verified
-  - `TestCaseRunner.run` returns a `TestResult` object. You can then use `TestCase.verify_test_result` to verify the result is as expected
-  - Before `TestCase.verify_test_result` is called, you can modify the `TestResult` object, if needed
-  - If you need to modify the test case data before the test is run, you can use the `test_data_modifier` argument of `TestCaseRunner.run`
-    - This is a convenient place to programmatically add authentication data to your test case requests
-- `TestCaseRunner` needs a `client` provided so that it can make requests to your API
-  - There is a `TestClient` class provided out of the box, which makes simple HTTP requests to your API using the `requests` library
-  - If you need something more custom, you can create your own class that extends from `BaseTestClient`
-- `TestCase.verify_test_result` uses a [simple verifier](https://github.com/alexschimpf/python-rest-api-tester/blob/main/rest_api_tester/test.py#L77) by default
-  - If you need something more custom, the verifier can be overridden by using the `verifier` argument
+5. Add a more complicated test
+```json
+{
+    "update_something": {
+        "url": "/something/{id}",
+        "method": "PUT",
+        "status": 200,
+        "request": {
+            "name": "something",
+            "alias": "$$$"
+        },
+        "response": {
+            "id": "$$$",
+            "name": "something",
+            "alias": "$$$",
+            "created_date": "$$$"
+        }
+    }
+}
+```
+```python
+import datetime
+
+class TestSomething(TestCase):
+    
+    ...
+
+    def test_update_something(self) -> None:
+        new_alias = 'something_else'
+        something_id = create_something()  # assume this function already exists
+        result = self.runner.run(
+            path_to_test_cases='test_something.json',
+            test_name='update_something',
+            # Fill in URL variables at runtime
+            url_params={'id': something_id},
+            # Modify request data at runtime
+            request_json_modifiers={
+              'alias': new_alias
+            },
+            # Modify expected response data at runtime
+            response_json_modifiers={
+              'id': something_id,
+              'alias': new_alias,
+              'created_date': str(datetime.datetime.now().date())
+            }
+        )
+        self.verify_test_result(
+          result=result,
+          # Exclude some response fields from validation
+          excluded_response_paths=[
+            'some_response_field_i_can_ignore'
+          ]
+        )
+```
+
+## Details
+- TODO
 
 ## Not Supported
 - File uploads
@@ -92,4 +137,4 @@ class TestSomething(TestCase):
 
 ## Examples
 - You can find more advanced API test examples [here](https://github.com/alexschimpf/python-rest-api-tester/tree/main/tests/api).
-- Note: The examples provided are run against a FastAPI server, and thus need Python3.7+ to run
+- Note: The examples provided are run against a FastAPI server, and thus need Python3.7+ to run.
