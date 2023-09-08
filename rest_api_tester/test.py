@@ -69,7 +69,9 @@ class TestCase(unittest.TestCase):
             This function should typically be defined as a test case instance method so `self.assert...` methods
             can be utilized. If not provided, the `default_verifier` function from this class will be used.
         :param excluded_response_paths:
-            TODO
+            A list of JSON paths that define which elements of the actual response body will be
+            excluded during verification.
+            See `rest_api_tester.utils.json_remove` for more details.
         :param update_expectations_on_fail:
             If True, expectation files will automatically be updated when tests fail.
             This can be useful if you want to quickly set up your test expectations.

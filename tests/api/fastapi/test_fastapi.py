@@ -99,10 +99,7 @@ class TestJSON(TestCase):
     def test_get_status__200(self) -> None:
         result = self.runner.run(
             path_to_test_cases='test_fastapi.json',
-            test_name='test_get_status__200',
-            response_template_vars={
-                'response_str': 'OK'
-            }
+            test_name='test_get_status__200'
         )
         self.verify_test_result(result=result)
 
@@ -212,11 +209,11 @@ class TestJSON(TestCase):
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200_template_vars',
-                request_template_vars={
+                request_json_modifiers={
                     'name': 'alex'
                 },
-                response_template_vars={
-                    'name': 'alexschimpf'
+                response_json_modifiers={
+                    'name': 'alex'
                 }
             )
             self.verify_test_result(result=result)

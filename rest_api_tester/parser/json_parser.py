@@ -1,27 +1,24 @@
 import os
 import ujson
-import jinja2
 from typing import Any, Union
 
 from rest_api_tester.test import TestData
 from rest_api_tester.parser.base import ParserProto
-from rest_api_tester.config import Config
+from rest_api_tester import utils
 
 EXTERNAL_FILE_PREFIX = 'file::'
 
 
-class JsonJinjaParser(ParserProto):
+class JSONParser(ParserProto):
 
     @staticmethod
     def parse(
         path_to_data: str,
         path_to_test_cases: str,
         test_name: str,
-        request_template_vars: Union[dict[str, Any], None],
-        response_template_vars: Union[dict[str, Any], None]
+        request_json_modifiers: Union[dict[str, Any], None],
+        response_json_modifiers: Union[dict[str, Any], None]
     ) -> TestData:
-        jinja_env = jinja2.Environment(**Config.JINJA_SETTINGS)
-
         test_cases_file_path = os.path.join(path_to_data, path_to_test_cases)
         with open(test_cases_file_path, 'r') as f:
             test_cases = ujson.loads(f.read())
@@ -52,9 +49,11 @@ class JsonJinjaParser(ParserProto):
             else:
                 raise Exception('Request format is invalid')
 
-        if request_template_vars and request:
-            request_template = jinja_env.from_string(request)
-            request = request_template.render(**request_template_vars)
+        if request_json_modifiers:
+            request_json = ujson.loads(request)
+            for path, value in request_json_modifiers.items():
+                request_json = utils.json_update(j=request_json, path=path, value=value)
+            request = ujson.dumps(request_json)
 
         response = test_case.get('response')
         if response:
@@ -68,9 +67,11 @@ class JsonJinjaParser(ParserProto):
             else:
                 raise Exception('Response format is invalid')
 
-        if response_template_vars and response:
-            response_template = jinja_env.from_string(response)
-            response = response_template.render(**response_template_vars)
+        if response_json_modifiers:
+            response_json = ujson.loads(response)
+            for path, value in response_json_modifiers.items():
+                response_json = utils.json_update(j=response_json, path=path, value=value)
+            response = ujson.dumps(response_json)
 
         headers = test_case.get('headers')
         if headers:

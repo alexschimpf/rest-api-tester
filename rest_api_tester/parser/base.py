@@ -10,7 +10,7 @@ class ParserProto(Protocol):
         path_to_data: str,
         path_to_test_cases: str,
         test_name: str,
-        request_template_vars: Union[dict[str, Any], None],
-        response_template_vars: Union[dict[str, Any], None]
+        request_json_modifiers: Union[dict[str, Any], None],
+        response_json_modifiers: Union[dict[str, Any], None]
     ) -> TestData:
         ...

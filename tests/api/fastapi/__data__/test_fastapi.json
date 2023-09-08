@@ -3,7 +3,7 @@
         "url": "/status",
         "method": "GET",
         "status": 200,
-        "response": "{{ response_str }}"
+        "response": "OK"
     },
     "test_get_protected__200": {
         "url": "/protected",
@@ -120,11 +120,11 @@
         "method": "POST",
         "status": 200,
         "request": {
-            "name": "{{ name + 'schimpf' }}"
+            "name": "%%request_name*%"
         },
         "response": {
             "id": 1,
-            "name": "{{ name }}"
+            "name": "%%response_name%%"
         }
     },
     "test_create_item__200_excluded_response_paths": {
