@@ -59,11 +59,11 @@ class TestCaseRunner:
             This class parses a test cases file and returns a TestData object for a given test case
         :param test_data_modifier:
             Function to modify the test data before the test is run.
-            This is done after `template_vars` is processed.
+            This is done after `request_template_vars` and `response_template_vars` are processed.
         :param request_template_vars:
             These key/values will be rendered into the test's request template
         :param response_template_vars:
-            These key/values will be rendered into the test's response template
+            These key/values will be rendered into the test's expected response template
         """
 
         test_data = self._get_test_data(

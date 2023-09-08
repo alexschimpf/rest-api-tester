@@ -201,9 +201,38 @@ class TestJSON(TestCase):
             result.test_data = self._modify_expected_response(
                 test_data=result.test_data,
                 id=max(self.items.keys()),
-                name=ujson.loads(result.response.text)['name']
+                name=result.response.json['name']
             )
             self.verify_test_result(result=result)
+        finally:
+            self.items.clear()
+
+    def test_create_item__200_template_vars(self) -> None:
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_template_vars',
+                request_template_vars={
+                    'name': 'alex'
+                },
+                response_template_vars={
+                    'name': 'alexschimpf'
+                }
+            )
+            self.verify_test_result(result=result)
+        finally:
+            self.items.clear()
+
+    def test_create_item__200_excluded_response_paths(self) -> None:
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_excluded_response_paths'
+            )
+            self.verify_test_result(
+                result=result,
+                excluded_response_paths=['id']
+            )
         finally:
             self.items.clear()
 
@@ -246,18 +275,15 @@ class TestJSON(TestCase):
         self.verify_test_result(result=result)
 
     def custom_verifier(self, result: TestResult) -> None:
-        expected_response = ujson.loads(cast(str, result.test_data.expected_response))
-        actual_response = ujson.loads(result.response.text)
-
         # Only check names
         self.assertListEqual(
-            list(sorted(item['name'] for item in expected_response['items'])),
-            list(sorted(item['name'] for item in actual_response['items'])),
+            list(sorted(item['name'] for item in result.test_data.expected_response_json['items'])),
+            list(sorted(item['name'] for item in result.response.json['items'])),
         )
 
     @staticmethod
     def _modify_expected_response(test_data: TestData, **kwargs: dict[str, Any]) -> TestData:
-        expected_response_dict = ujson.loads(cast(str, test_data.expected_response))
-        expected_response_dict.update(**kwargs)
-        test_data.expected_response = ujson.dumps(expected_response_dict)
+        expected_response_json = test_data.expected_response_json
+        expected_response_json.update(**kwargs)
+        test_data.expected_response = ujson.dumps(expected_response_json)
         return test_data

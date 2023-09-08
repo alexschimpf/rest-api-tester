@@ -6,6 +6,7 @@ import ujson
 
 from rest_api_tester.client.response_data import ResponseData
 from rest_api_tester.config import Config
+from rest_api_tester import utils
 
 
 @dataclass
@@ -55,6 +56,7 @@ class TestCase(unittest.TestCase):
         self,
         result: TestResult,
         verifier: Union[Callable[[TestResult], None], None] = None,
+        excluded_response_paths: Union[list[str], None] = None,
         update_expectations_on_fail: bool = False
     ) -> None:
         """
@@ -66,6 +68,8 @@ class TestCase(unittest.TestCase):
             A function used to verify the response body.
             This function should typically be defined as a test case instance method so `self.assert...` methods
             can be utilized. If not provided, the `default_verifier` function from this class will be used.
+        :param excluded_response_paths:
+            TODO
         :param update_expectations_on_fail:
             If True, expectation files will automatically be updated when tests fail.
             This can be useful if you want to quickly set up your test expectations.
@@ -80,10 +84,17 @@ class TestCase(unittest.TestCase):
             Config.UPDATE_EXPECTATIONS_ON_FAIL
         ))
 
-        actual_response = result.response.text
         actual_status = result.test_data.expected_status
         expected_status = result.response.status_code
         expected_response = result.test_data.expected_response
+
+        actual_response = result.response.text
+        if excluded_response_paths:
+            actual_response = result.response.json
+            for excluded_response_path in excluded_response_paths:
+                actual_response = utils.json_remove(j=actual_response, path=excluded_response_path)
+            actual_response = ujson.dumps(actual_response)
+            result.response.text = actual_response
 
         try:
             # Check status

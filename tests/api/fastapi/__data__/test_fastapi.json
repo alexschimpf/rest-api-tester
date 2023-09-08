@@ -115,6 +115,29 @@
             "name": null
         }
     },
+    "test_create_item__200_template_vars": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "{{ name + 'schimpf' }}"
+        },
+        "response": {
+            "id": 1,
+            "name": "{{ name }}"
+        }
+    },
+    "test_create_item__200_excluded_response_paths": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "item1"
+        },
+        "response": {
+            "name": "item1"
+        }
+    },
     "test_get_item__200": {
         "url": "/items/1",
         "method": "GET",
