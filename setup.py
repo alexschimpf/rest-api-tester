@@ -1,4 +1,6 @@
+import ujson
 from setuptools import setup
+
 
 with open('README.md', 'r') as readme_file:
     long_description = readme_file.read()
@@ -6,8 +8,9 @@ with open('README.md', 'r') as readme_file:
 with open('requirements.txt', 'r') as requirements_file:
     requirements_list = requirements_file.readlines()
 
-with open('VERSION', 'r') as version_file:
-    version = version_file.read().strip()
+with open('package.json', 'r') as package_file:
+    package_dict = ujson.loads(package_file.read().strip())
+    version = package_dict['version']
 
 setup(
     name='rest_api_tester',

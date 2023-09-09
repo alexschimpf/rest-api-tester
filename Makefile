@@ -34,13 +34,25 @@ deploy:
 deploy-test:
 	twine upload -r testpypi dist/*
 
-# run python tests
+# run all tests
 run-tests:
 	pytest tests/*
+
+# run unit tests
+run-unit-tests:
+	pytest tests/unit/*
+
+# run api tests
+run-api-tests:
+	pytest tests/api/*
 
 # type check python
 type-check:
 	mypy .
+
+# lint
+lint:
+	flake8 .
 
 # install dev dependencies
 install-dev:
