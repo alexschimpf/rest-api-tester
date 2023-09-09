@@ -52,7 +52,7 @@ type-check:
 
 # lint
 lint:
-	flake8 .
+	flake8 rest_api_tester tests
 
 # install dev dependencies
 install-dev:

@@ -132,7 +132,7 @@ class TestJSON(TestCase):
         self.verify_test_result(result=result)
 
     def test_get_items__200_one_item(self) -> None:
-        self.items[1] = "item1"
+        self.items[1] = 'item1'
         try:
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
@@ -143,8 +143,8 @@ class TestJSON(TestCase):
             self.items.clear()
 
     def test_get_items__200_with_custom_verifier(self) -> None:
-        self.items[1] = "item1"
-        self.items[2] = "item2"
+        self.items[1] = 'item1'
+        self.items[2] = 'item2'
         try:
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
@@ -235,7 +235,7 @@ class TestJSON(TestCase):
             self.items.clear()
 
     def test_get_item__200(self) -> None:
-        self.items[1] = "item1"
+        self.items[1] = 'item1'
         try:
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
@@ -253,7 +253,7 @@ class TestJSON(TestCase):
         self.verify_test_result(result=result)
 
     def test_delete_item__200(self) -> None:
-        self.items[1] = "item1"
+        self.items[1] = 'item1'
         try:
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
@@ -275,8 +275,8 @@ class TestJSON(TestCase):
     def custom_verifier(self, result: TestResult) -> None:
         # Only check names
         self.assertListEqual(
-            list(sorted(item['name'] for item in result.test_data.expected_response_json['items'])),
-            list(sorted(item['name'] for item in result.response.json['items'])),
+            sorted(item['name'] for item in result.test_data.expected_response_json['items']),
+            sorted(item['name'] for item in result.response.json['items'])
         )
 
     @staticmethod
