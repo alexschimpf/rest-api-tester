@@ -57,3 +57,7 @@ lint:
 # install dev dependencies
 install-dev:
 	pip install -r requirements.dev.txt
+
+# enable commit hook for python linter
+install-linter:
+	pre-commit install
