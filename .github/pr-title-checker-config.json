@@ -1,0 +1,12 @@
+{
+    "CHECKS": {
+        "prefixes": [
+            "breaking: ",
+            "feat: ",
+            "fix: ",
+            "perf: ",
+            "refactor: ",
+            "no-release: "
+        ]
+    }
+}

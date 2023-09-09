@@ -6,5 +6,12 @@ on:
       - 'staging'
 
 jobs:
+  title-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: thehanimo/pr-title-checker@v1.4.0
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   checks:
     uses: ./.github/workflows/callable-common-checks.yml
