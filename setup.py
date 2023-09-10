@@ -1,11 +1,20 @@
+import ujson
 from setuptools import setup
 
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
+
+with open('README.md', 'r') as readme_file:
+    long_description = readme_file.read()
+
+with open('requirements.txt', 'r') as requirements_file:
+    requirements_list = requirements_file.readlines()
+
+with open('package.json', 'r') as package_file:
+    package_dict = ujson.loads(package_file.read().strip())
+    version = package_dict['version']
 
 setup(
     name='rest_api_tester',
-    version='0.1.1',
+    version=version,
     author='Alex Schimpf',
     author_email='aschimpf1@gmail.com',
     description='Rest API tester',
@@ -15,21 +24,16 @@ setup(
     package_data={'rest_api_tester': ['py.typed']},
     packages=[
         'rest_api_tester',
-        'rest_api_tester.parser'
+        'rest_api_tester.parser',
+        'rest_api_tester.client'
     ],
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3.11'
     ],
-    install_requires=[
-        'ujson>=5.6.0',
-        'requests>=2.28.1'
-    ],
-    python_requires='>=3.6'
+    install_requires=requirements_list,
+    python_requires='>=3.7'
 )

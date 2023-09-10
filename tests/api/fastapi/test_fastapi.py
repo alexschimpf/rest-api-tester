@@ -2,7 +2,7 @@ import os
 import string
 import random
 import ujson
-from typing import Union, Any, Dict, cast
+from typing import Union, Any, Dict
 from fastapi import FastAPI, Header
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel
@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from rest_api_tester.test import TestCase, TestData, TestResult
 from rest_api_tester.runner import TestCaseRunner
 
-from tests.api.fastapi_test_client import FastAPITestClient
+from tests.api.fastapi.fastapi_test_client import FastAPITestClient
 
 
 class Item(BaseModel):
@@ -22,6 +22,7 @@ class TestJSON(TestCase):
     def setUp(self) -> None:
         self.items: Dict[Any, Any] = {}
         self.app = FastAPI()
+        self.update_expectations_on_fail = False
 
         @self.app.get('/status', response_class=PlainTextResponse)
         def get_status() -> Any:
@@ -97,44 +98,44 @@ class TestJSON(TestCase):
 
     def test_get_status__200(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_status__200'
         )
         self.verify_test_result(result=result)
 
     def test_get_protected__200(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_protected__200'
         )
         self.verify_test_result(result=result)
 
     def test_get_protected__401(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_protected__401'
         )
         self.verify_test_result(result=result)
 
     def test_get_google__301(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_google__301'
         )
         self.verify_test_result(result=result)
 
     def test_get_items__200_empty(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_items__200_empty'
         )
         self.verify_test_result(result=result)
 
     def test_get_items__200_one_item(self) -> None:
-        self.items[1] = "item1"
+        self.items[1] = 'item1'
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_get_items__200_one_item'
             )
             self.verify_test_result(result=result)
@@ -142,11 +143,11 @@ class TestJSON(TestCase):
             self.items.clear()
 
     def test_get_items__200_with_custom_verifier(self) -> None:
-        self.items[1] = "item1"
-        self.items[2] = "item2"
+        self.items[1] = 'item1'
+        self.items[2] = 'item2'
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_get_items__200_with_custom_verifier',
             )
             self.verify_test_result(result=result, verifier=self.custom_verifier)
@@ -156,7 +157,7 @@ class TestJSON(TestCase):
     def test_create_item__200(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200'
             )
             self.verify_test_result(result=result)
@@ -166,7 +167,7 @@ class TestJSON(TestCase):
     def test_create_item__200_with_external_files(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200_with_external_files'
             )
             self.verify_test_result(result=result)
@@ -180,7 +181,7 @@ class TestJSON(TestCase):
 
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200_with_test_data_modifier',
                 test_data_modifier=modifier
             )
@@ -191,23 +192,53 @@ class TestJSON(TestCase):
     def test_create_item__200_no_name(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200_no_name'
             )
             result.test_data = self._modify_expected_response(
                 test_data=result.test_data,
                 id=max(self.items.keys()),
-                name=result.response.json()['name']
+                name=result.response.json['name']
             )
             self.verify_test_result(result=result)
         finally:
             self.items.clear()
 
-    def test_get_item__200(self) -> None:
-        self.items[1] = "item1"
+    def test_create_item__200_template_vars(self) -> None:
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_template_vars',
+                request_json_modifiers={
+                    'name': 'alex'
+                },
+                response_json_modifiers={
+                    'id': 1,
+                    'name': 'alex'
+                }
+            )
+            self.verify_test_result(result=result)
+        finally:
+            self.items.clear()
+
+    def test_create_item__200_excluded_response_paths(self) -> None:
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_excluded_response_paths'
+            )
+            self.verify_test_result(
+                result=result,
+                excluded_response_paths=['id']
+            )
+        finally:
+            self.items.clear()
+
+    def test_get_item__200(self) -> None:
+        self.items[1] = 'item1'
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_get_item__200'
             )
             self.verify_test_result(result=result)
@@ -216,16 +247,16 @@ class TestJSON(TestCase):
 
     def test_get_item__404(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_get_item__404'
         )
         self.verify_test_result(result=result)
 
     def test_delete_item__200(self) -> None:
-        self.items[1] = "item1"
+        self.items[1] = 'item1'
         try:
             result = self.runner.run(
-                path_to_test_cases='test_json.json',
+                path_to_test_cases='test_fastapi.json',
                 test_name='test_delete_item__200',
                 url_params={'item_id': 1}
             )
@@ -235,25 +266,22 @@ class TestJSON(TestCase):
 
     def test_delete_item__404(self) -> None:
         result = self.runner.run(
-            path_to_test_cases='test_json.json',
+            path_to_test_cases='test_fastapi.json',
             test_name='test_delete_item__404',
             url_params={'item_id': 1}
         )
         self.verify_test_result(result=result)
 
     def custom_verifier(self, result: TestResult) -> None:
-        expected_response = ujson.loads(cast(str, result.test_data.expected_response))
-        actual_response = result.response.json()
-
         # Only check names
         self.assertListEqual(
-            list(sorted(item['name'] for item in expected_response['items'])),
-            list(sorted(item['name'] for item in actual_response['items'])),
+            sorted(item['name'] for item in result.test_data.expected_response_json['items']),
+            sorted(item['name'] for item in result.response.json['items'])
         )
 
     @staticmethod
     def _modify_expected_response(test_data: TestData, **kwargs: Dict[str, Any]) -> TestData:
-        expected_response_dict = ujson.loads(cast(str, test_data.expected_response))
-        expected_response_dict.update(**kwargs)
-        test_data.expected_response = ujson.dumps(expected_response_dict)
+        expected_response_json = test_data.expected_response_json
+        expected_response_json.update(**kwargs)
+        test_data.expected_response = ujson.dumps(expected_response_json)
         return test_data
