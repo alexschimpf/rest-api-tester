@@ -3,6 +3,7 @@
 2. Make sure to fill out the issue template with all necessary details.
 
 ## Pull Requests
+- All pull requests should be made against the staging branch
 - All necessary checks are run on pull requests
   - PR title format check
   - EOF newline check
