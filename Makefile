@@ -36,7 +36,7 @@ deploy-test:
 
 # run all tests with coverage
 run-tests:
-	pytest --cov=rest_api_tester --cov-fail-under=80 tests/
+	pytest --cov=rest_api_tester --cov-fail-under=80 --no-cov-on-fail tests/
 
 # run unit tests
 run-unit-tests:
