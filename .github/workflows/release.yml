@@ -10,19 +10,20 @@ jobs:
     uses: ./.github/workflows/callable-common-checks.yml
 
   release:
+    needs: checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - run: pnpm install .
+      - run: pnpm install
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm run release
       - run: make install-dev
       - run: make build
       - env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }} 
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: make deploy
