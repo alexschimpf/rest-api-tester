@@ -6,9 +6,9 @@
 
 ## About
 `rest-api-tester` makes it easy to create REST API tests for your APIs.
-Though this tool is written in Python, your APIs need not be. This library provides a consistent way to write API tests 
+Though this tool is written in Python, your APIs need not be. This library provides a consistent way to write API tests
 and perform the necessary validation. It is primarily built to handle traditional, JSON-based APIs, although it has
-the ability to handle other API formats. Also... `rest-api-tester` can auto-update your scenario files for you when 
+the ability to handle other API formats. Also... `rest-api-tester` can auto-update your scenario files for you when
 tests fail!
 
 ## Tutorial
@@ -47,7 +47,7 @@ from rest_api_tester.test import TestCase
 from rest_api_tester.runner import TestCaseRunner
 
 class TestSomething(TestCase):
-    
+
     def setUp(self) -> None:
         test_client = TestClient(base_url='https://myapp.com:5000')
         path_to_data = os.path.join(os.path.dirname(__file__), '__data__')
@@ -61,7 +61,7 @@ class TestSomething(TestCase):
 4. Create your first API test
 ```python
 class TestSomething(TestCase):
-    
+
     ...
 
     def test_create_something(self) -> None:
@@ -96,7 +96,7 @@ class TestSomething(TestCase):
 import datetime
 
 class TestSomething(TestCase):
-    
+
     ...
 
     def test_update_something(self) -> None:
@@ -139,7 +139,7 @@ You must implement your own client as a subclass of `rest_api_tester.client.base
 See [here](https://github.com/alexschimpf/python-rest-api-tester/tree/main/tests/api/fastapi/fastapi_test_client.py) for an example.
 
 ### Test Case Runner
-To run your test cases, you must use `rest_api_tester.runner.TestCaseRunner`. 
+To run your test cases, you must use `rest_api_tester.runner.TestCaseRunner`.
 This class parses your test scenario files and uses your client implementation to make the necessary API requests.
 A JSON parser is provided as a default to parse your test scenario files.
 A scenario files can contain one or more test scenarios, each with a specific key that can be referenced in code.
