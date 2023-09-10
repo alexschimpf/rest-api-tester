@@ -34,9 +34,9 @@ deploy:
 deploy-test:
 	twine upload -r testpypi dist/*
 
-# run all tests
+# run all tests with coverage
 run-tests:
-	pytest tests/*
+	pytest --cov=rest_api_tester --cov-fail-under=80 tests/
 
 # run unit tests
 run-unit-tests:

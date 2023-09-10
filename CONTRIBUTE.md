@@ -55,7 +55,7 @@ make install-linter
 ```shell
 make run-unit-tests
 make run-api-tests
-make run-tests  # run both unit and api tests
+make run-tests  # run both unit and api tests with coverage check
 ```
 
 ### Type Checking

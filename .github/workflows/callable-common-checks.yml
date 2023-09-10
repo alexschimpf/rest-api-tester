@@ -37,7 +37,7 @@ jobs:
       - run: make install-dev
       - run: make type-check
 
-  unit-tests:
+  unit-and-api-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,17 +48,4 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: make install-dev
-      - run: make run-unit-tests
-
-  api-tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: make install-dev
-      - run: make run-api-tests
+      - run: make run-tests
