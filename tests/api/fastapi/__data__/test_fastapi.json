@@ -50,10 +50,12 @@
         "method": "GET",
         "status": 200,
         "response": {
-            "items": [{
-                "id": 1,
-                "name": "item1"
-            }]
+            "items": [
+                {
+                    "id": 1,
+                    "name": "item1"
+                }
+            ]
         }
     },
     "test_get_items__200_with_custom_verifier": {
@@ -113,6 +115,28 @@
             "name": null
         }
     },
+    "test_create_item__200_template_vars": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "%%request_name*%"
+        },
+        "response": {
+            "name": "%%response_name%%"
+        }
+    },
+    "test_create_item__200_excluded_response_paths": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "item1"
+        },
+        "response": {
+            "name": "item1"
+        }
+    },
     "test_get_item__200": {
         "url": "/items/1",
         "method": "GET",
@@ -125,7 +149,10 @@
     "test_get_item__404": {
         "url": "/items/1",
         "method": "GET",
-        "status": 404
+        "status": 404,
+        "response_headers": {
+            "content-length": "0"
+        }
     },
     "test_delete_item__200": {
         "url": "/items/{item_id}",
