@@ -1,4 +1,8 @@
 {
+    "name": "rest-api-tester",
+    "author": "Alex Schimpf",
+    "description": "REST API testing library",
+    "keywords": [],
     "version": "1.0.0",
     "devDependencies": {
         "@commitlint/cli": "^17.7.1",
