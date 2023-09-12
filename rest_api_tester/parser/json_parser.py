@@ -13,13 +13,13 @@ class JSONParser(BaseParser):
 
     @staticmethod
     def parse(
-        path_to_data: str,
+        path_to_scenarios_dir: str,
         path_to_test_cases: str,
         test_name: str,
         request_json_modifiers: Union[Dict[str, Any], None],
         response_json_modifiers: Union[Dict[str, Any], None]
     ) -> TestData:
-        test_cases_file_path = os.path.join(path_to_data, path_to_test_cases)
+        test_cases_file_path = os.path.join(path_to_scenarios_dir, path_to_test_cases)
         with open(test_cases_file_path, 'r') as f:
             test_cases = ujson.loads(f.read())
 
@@ -43,7 +43,7 @@ class JSONParser(BaseParser):
                 request = ujson.dumps(request)
             elif isinstance(request, str):
                 if request.startswith(EXTERNAL_FILE_PREFIX):
-                    request_file_path = os.path.join(path_to_data, request[len(EXTERNAL_FILE_PREFIX):])
+                    request_file_path = os.path.join(path_to_scenarios_dir, request[len(EXTERNAL_FILE_PREFIX):])
                     with open(request_file_path, 'r') as f:
                         request = str(f.read().strip())
             else:
@@ -61,7 +61,7 @@ class JSONParser(BaseParser):
                 response = ujson.dumps(response)
             elif isinstance(response, str):
                 if response.startswith(EXTERNAL_FILE_PREFIX):
-                    response_file_path = os.path.join(path_to_data, response[len(EXTERNAL_FILE_PREFIX):])
+                    response_file_path = os.path.join(path_to_scenarios_dir, response[len(EXTERNAL_FILE_PREFIX):])
                     with open(response_file_path, 'r') as f:
                         response = str(f.read().strip())
             else:

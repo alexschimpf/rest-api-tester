@@ -16,6 +16,9 @@ def json_remove(j: Any, path: str) -> Any:
     - "[1].[a]" => Removes j[1]['a']
     - "a.b" => Removes j['a']['b']
     - "a.*b" => Removes x['b'] from all elements x of j['a']
+        - Note that x must be a dict
+    - "a.*[1]" => Removes x[1] for all elements x of j['a']
+        - Note that x must be a list
 
     :param j:
         json (list or dict)
@@ -57,11 +60,21 @@ def json_remove(j: Any, path: str) -> Any:
             except Exception:
                 pass
         elif token.startswith('*'):
-            token = token[1:]
-            for item in j:
-                if isinstance(item, dict):
-                    if token in item:
-                        del item[token]
+            if isinstance(j, list):
+                if token[1] == '[':
+                    i = int(token[2:-1])
+                    for item in j:
+                        try:
+                            if isinstance(item, list):
+                                del item[i]
+                        except Exception:
+                            pass
+                else:
+                    token = token[1:]
+                    for item in j:
+                        if isinstance(item, dict):
+                            if token in item:
+                                del item[token]
         else:
             try:
                 del j[token]
@@ -87,6 +100,9 @@ def json_update(j: Any, path: str, value: Any) -> Any:
     - "a.b" => Updates j['a']['b'] or adds if it doesn't exist
         - Note that j['a'] will not get added automatically if it does not exist
     - "a.*b" => Update x['b'] (or adds if it doesn't exist) for all elements x of j['a']
+        - Note that x must be a dict
+    - "a.*[1]" => Updates x[1] for all elements x of j['a']
+        - Note that x must be a list
 
     :param j:
         json (list or dict)
@@ -130,10 +146,20 @@ def json_update(j: Any, path: str, value: Any) -> Any:
             except Exception:
                 pass
         elif token.startswith('*'):
-            token = token[1:]
-            for item in j:
-                if isinstance(item, dict):
-                    item[token] = value
+            if isinstance(j, list):
+                if token[1] == '[':
+                    i = int(token[2:-1])
+                    for item in j:
+                        try:
+                            if isinstance(item, list):
+                                item[i] = value
+                        except Exception:
+                            pass
+                else:
+                    token = token[1:]
+                    for item in j:
+                        if isinstance(item, dict):
+                            item[token] = value
         else:
             try:
                 j[token] = value

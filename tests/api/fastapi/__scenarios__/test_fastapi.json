@@ -166,5 +166,13 @@
         "url": "/items/{item_id}",
         "method": "DELETE",
         "status": 404
+    },
+    "test_update_scenarios_on_fail": {
+        "url": "/protected",
+        "method": "GET",
+        "status": 400,
+        "headers": {
+            "secret": "s3cr3t!"
+        }
     }
 }

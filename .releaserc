@@ -29,14 +29,43 @@
                         "release": "patch"
                     },
                     {
-                        "scope": "no-release",
+                        "scope": "docs",
+                        "release": false
+                    },
+                    {
+                        "scope": "test",
+                        "release": false
+                    },
+                    {
+                        "scope": "ci",
+                        "release": false
+                    },
+                    {
+                        "scope": "chore",
                         "release": false
                     }
                 ]
             }
         ],
         "@semantic-release/release-notes-generator",
-        "@semantic-release/changelog",
+        [
+            "@semantic-release/changelog",
+            {
+                "changelogFile": "CHANGELOG.md"
+            }
+        ],
+        [
+            "@semantic-release/npm",
+            {
+                "npmPublish": false
+            }
+        ],
+        [
+            "@semantic-release/git",
+            {
+                "message": "chore: Release ${nextRelease.version}"
+            }
+        ],
         "@semantic-release/github"
     ]
 }

@@ -13,14 +13,14 @@ class TestCaseRunner:
     def __init__(
         self,
         client: BaseTestClient,
-        path_to_data: str,
+        path_to_scenarios_dir: str,
         request_timeout: int = 10,
         default_content_type: Union[str, None] = None
     ):
         """
         :param client:
             Test client that will make requests to your server
-        :param path_to_data:
+        :param path_to_scenarios_dir:
             Absolute path to the directory containing test case files
         :param request_timeout:
             In seconds
@@ -30,7 +30,7 @@ class TestCaseRunner:
         """
 
         self.client = client
-        self.path_to_data = path_to_data
+        self.path_to_scenarios_dir = path_to_scenarios_dir
         self.request_timeout = request_timeout
         self.default_content_type = default_content_type
 
@@ -49,7 +49,7 @@ class TestCaseRunner:
         You can verify the result using `test.TestCase.verify_test_result()`
 
         :param path_to_test_cases:
-            This is relative to the "path_to_data" folder
+            This is relative to the "path_to_scenarios_dir" folder
         :param test_name:
             The JSON key that is associated with the test in the test file
         :param url_params:
@@ -94,7 +94,7 @@ class TestCaseRunner:
         response_json_modifiers: Union[Dict[str, Any], None] = None
     ) -> TestData:
         test_data = file_parser.parse(
-            path_to_data=self.path_to_data,
+            path_to_scenarios_dir=self.path_to_scenarios_dir,
             path_to_test_cases=path_to_test_cases,
             test_name=test_name,
             request_json_modifiers=request_json_modifiers,

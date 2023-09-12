@@ -6,9 +6,6 @@ on:
       - 'main'
 
 jobs:
-  checks:
-    uses: ./.github/workflows/callable-common-checks.yml
-
   release:
     needs: checks
     runs-on: ubuntu-latest
