@@ -21,9 +21,3 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.CLI_PAT }}
         run: pnpm run release
-      - run: make install-dev
-      - run: make build
-      - env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: make deploy
