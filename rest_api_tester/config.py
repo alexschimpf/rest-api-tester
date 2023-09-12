@@ -1,2 +1,2 @@
 class Config:
-    UPDATE_EXPECTATIONS_ON_FAIL: bool = False
+    UPDATE_SCENARIOS_ON_FAIL: bool = False

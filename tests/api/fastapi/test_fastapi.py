@@ -22,7 +22,7 @@ class TestJSON(TestCase):
     def setUp(self) -> None:
         self.items: Dict[Any, Any] = {}
         self.app = FastAPI()
-        self.update_expectations_on_fail = False
+        self.update_scenarios_on_fail = False
 
         @self.app.get('/status', response_class=PlainTextResponse)
         def get_status() -> Any:
@@ -89,10 +89,10 @@ class TestJSON(TestCase):
                 ]
             }
 
-        path_to_data = os.path.join(os.path.dirname(__file__), '__data__')
+        path_to_scenarios_dir = os.path.join(os.path.dirname(__file__), '__scenarios__')
         self.runner = TestCaseRunner(
             client=FastAPITestClient(app=self.app),
-            path_to_data=path_to_data,
+            path_to_scenarios_dir=path_to_scenarios_dir,
             default_content_type='application/json'
         )
 
@@ -271,6 +271,33 @@ class TestJSON(TestCase):
             url_params={'item_id': 1}
         )
         self.verify_test_result(result=result)
+
+    def test_update_scenarios_on_fail(self):
+        scenario_file_path = os.path.join(self.runner.path_to_scenarios_dir, 'test_fastapi.json')
+        with open(scenario_file_path, 'r') as f:
+            original_scenario_file_content = f.read()
+
+        with self.assertRaises(Exception):
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_update_scenarios_on_fail'
+            )
+            self.verify_test_result(result=result, update_scenarios_on_fail=True)
+
+        try:
+            with open(scenario_file_path, 'r') as f:
+                scenario_dict = ujson.loads(f.read())
+                self.assertDictEqual(
+                    scenario_dict['test_get_protected__200'],
+                    scenario_dict['test_update_scenarios_on_fail']
+                )
+        except Exception:
+            with open(scenario_file_path, 'w+') as f:
+                f.write(original_scenario_file_content)
+            raise
+        else:
+            with open(scenario_file_path, 'w+') as f:
+                f.write(original_scenario_file_content)
 
     def custom_verifier(self, result: TestResult) -> None:
         # Only check names

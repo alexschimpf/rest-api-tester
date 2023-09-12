@@ -3,7 +3,7 @@
 2. Make sure to fill out the issue template with all necessary details.
 
 ## Pull Requests
-- All pull requests should be made against the staging branch
+- All pull requests should be made against the `main` branch
 - All necessary checks are run on pull requests
   - PR title format check
   - EOF newline check
@@ -31,12 +31,17 @@
   - "refactor: "
     - Indicates that refactoring has been
     - Results in a patch version increment
-  - "no-release: "
-    - Indicates changes that require no release
+  - "docs: "
+    - Indicates a documentation change
     - This will not result in a new release / version increment
-    - Examples include (but are not limited to):
-      - README updates
-      - Changes related to dev environment (e.g. new Make commands, dev tooling, etc.)
+  - "test: "
+    - Indicates a test-related change
+    - This will not result in a new release / version increment
+  - "ci: "
+    - Indicates a workflow/deployment-related change
+    - This will not result in a new release / version increment
+  - "chore: "
+    - Any other type of change that should not result in a new release / version increment
 
 ## Local Development
 

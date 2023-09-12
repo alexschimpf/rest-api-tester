@@ -50,14 +50,14 @@ class TestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
-        self.update_expectations_on_fail = False
+        self.update_scenarios_on_fail = False
 
     def verify_test_result(
         self,
         result: TestResult,
         verifier: Union[Callable[[TestResult], None], None] = None,
         excluded_response_paths: Union[List[str], None] = None,
-        update_expectations_on_fail: bool = False
+        update_scenarios_on_fail: bool = False
     ) -> None:
         """
         Verifies that the test case result matches what is expected
@@ -72,18 +72,18 @@ class TestCase(unittest.TestCase):
             A list of JSON paths that define which elements of the actual response body will be
             excluded during verification.
             See `rest_api_tester.utils.json_remove` for more details.
-        :param update_expectations_on_fail:
-            If True, expectation files will automatically be updated when tests fail.
-            This can be useful if you want to quickly set up your test expectations.
+        :param update_scenarios_on_fail:
+            If True, scenario files will automatically be updated when tests fail.
+            This can be useful if you want to quickly set up your test scenarios.
             This can also be set for the entire test case instance via the instance
-            variable `update_expectations_on_fail` or globally via `Config.UPDATE_EXPECTATIONS_ON_FAIL`.
-            Note: This may corrupt expectation files if tests are run in parallel or if tests are abruptly killed.
+            variable `update_scenarios_on_fail` or globally via `Config.UPDATE_SCENARIOS_ON_FAIL`.
+            Note: This may corrupt scenario files if tests are run in parallel or if tests are abruptly killed.
         """
 
-        update_expectations_on_fail = any((
-            update_expectations_on_fail,
-            self.update_expectations_on_fail,
-            Config.UPDATE_EXPECTATIONS_ON_FAIL
+        update_scenarios_on_fail = any((
+            update_scenarios_on_fail,
+            self.update_scenarios_on_fail,
+            Config.UPDATE_SCENARIOS_ON_FAIL
         ))
 
         actual_status = result.test_data.expected_status
@@ -121,8 +121,8 @@ class TestCase(unittest.TestCase):
                 actual_headers = result.response.headers
                 self.assertDictEqual(expected_headers, dict(actual_headers), 'Headers do not match')
         except Exception:
-            if update_expectations_on_fail:
-                self._update_expectation(result=result)
+            if update_scenarios_on_fail:
+                self._update_scenario(result=result)
             raise
 
     def default_verifier(self, result: TestResult) -> None:
@@ -141,31 +141,31 @@ class TestCase(unittest.TestCase):
                 self.assertEqual(expected_response, actual_response)
 
     @staticmethod
-    def _update_expectation(result: TestResult) -> None:
+    def _update_scenario(result: TestResult) -> None:
         actual_response = result.response.text
         actual_status = result.response.status_code
         actual_headers = result.response.headers
 
-        print(f'\n\nUpdating expectation {result.test_data.file_path}::{result.test_data.name}')
+        print(f'\n\nUpdating test scenario {result.test_data.file_path}::{result.test_data.name}')
 
         with open(result.test_data.file_path, 'r') as f:
-            expectations = ujson.loads(f.read())
-            expectation = expectations[result.test_data.name]
-            expectation.update(
+            scenarios = ujson.loads(f.read())
+            scenario = scenarios[result.test_data.name]
+            scenario.update(
                 response_headers=actual_headers,
                 status=actual_status
             )
 
             if actual_response:
                 if isinstance(actual_response, str):
-                    expectation['response'] = actual_response
+                    scenario['response'] = actual_response
                 else:
-                    expectation['response'] = ujson.loads(actual_response)
+                    scenario['response'] = ujson.loads(actual_response)
             else:
-                expectation.pop('response', None)
+                scenario.pop('response', None)
 
         with open(result.test_data.file_path, 'w+') as f:
-            f.write(ujson.dumps(expectations, escape_forward_slashes=False, indent=4) + '\n')
+            f.write(ujson.dumps(scenarios, escape_forward_slashes=False, indent=4) + '\n')
 
     @staticmethod
     def _format_response(response: Union[str, None]) -> Any:

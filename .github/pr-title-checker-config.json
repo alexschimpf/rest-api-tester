@@ -6,7 +6,10 @@
             "fix: ",
             "perf: ",
             "refactor: ",
-            "no-release: "
+            "docs: ",
+            "test: ",
+            "ci: ",
+            "chore: "
         ]
     }
 }
