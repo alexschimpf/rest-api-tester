@@ -2,13 +2,6 @@ name: Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      username:
-        description: 'PyPI username'
-        required: true
-      password:
-        description: 'PyPI password'
-        required: true
 
 jobs:
   release:
@@ -21,6 +14,6 @@ jobs:
       - run: make install-dev
       - run: make build
       - env:
-          TWINE_USERNAME: ${{ github.events.inputs.username }}
-          TWINE_PASSWORD: ${{ github.events.inputs.password }}
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: make deploy
