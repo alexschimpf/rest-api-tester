@@ -272,7 +272,7 @@ class TestJSON(TestCase):
         )
         self.verify_test_result(result=result)
 
-    def test_update_scenarios_on_fail(self):
+    def test_update_scenarios_on_fail(self) -> None:
         scenario_file_path = os.path.join(self.runner.path_to_scenarios_dir, 'test_fastapi.json')
         with open(scenario_file_path, 'r') as f:
             original_scenario_file_content = f.read()
