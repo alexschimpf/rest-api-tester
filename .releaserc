@@ -26,7 +26,7 @@
                     },
                     {
                         "type": "refactor",
-                        "release": "patch"
+                        "release": false
                     },
                     {
                         "scope": "docs",
@@ -47,7 +47,32 @@
                 ]
             }
         ],
-        "@semantic-release/release-notes-generator",
+        [
+            "@semantic-release/release-notes-generator",
+            {
+                "preset": "conventionalcommits",
+                "presetConfig": {
+                    "types": [
+                        {
+                            "type": "breaking",
+                            "section": "Breaking Changes"
+                        },
+                        {
+                            "type": "feat",
+                            "section": "Features"
+                        },
+                        {
+                            "type": "fix",
+                            "section": "Bug Fixes"
+                        },
+                        {
+                            "type": "perf",
+                            "section": "Performance Improvements"
+                        }
+                    ]
+                }
+            }
+        ],
         [
             "@semantic-release/changelog",
             {
@@ -63,7 +88,10 @@
         [
             "@semantic-release/git",
             {
-                "message": "chore: Release ${nextRelease.version}"
+                "message": "chore: Release ${nextRelease.version}",
+                "assets": [
+                    "CHANGELOG.md"
+                ]
             }
         ],
         "@semantic-release/github"

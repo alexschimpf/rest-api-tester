@@ -30,7 +30,7 @@
     - Results in a patch version increment
   - "refactor: "
     - Indicates that refactoring has been
-    - Results in a patch version increment
+    - This will not result in a new release / version increment
   - "docs: "
     - Indicates a documentation change
     - This will not result in a new release / version increment
