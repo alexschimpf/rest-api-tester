@@ -90,7 +90,8 @@
             {
                 "message": "chore: Release ${nextRelease.version}",
                 "assets": [
-                    "CHANGELOG.md"
+                    "CHANGELOG.md",
+                    "package.json"
                 ]
             }
         ],
