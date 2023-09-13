@@ -12,7 +12,6 @@
   - API tests
   - Commit message linting
 - All checks must pass before merging
-- All pull requests will be rebased onto the main branch
 - All pull requests with code changes should contain tests or updates to existing tests
   - Exceptions are possible with a sufficient reason
 - Commit messages are linted via [commitlint](https://commitlint.js.org/#/)
