@@ -7,7 +7,9 @@
             "perf: ",
             "refactor: ",
             "docs: ",
+            "style: ",
             "test: ",
+            "deps: ",
             "ci: ",
             "chore: "
         ]

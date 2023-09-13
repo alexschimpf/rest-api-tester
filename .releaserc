@@ -25,23 +25,31 @@
                         "release": "patch"
                     },
                     {
+                        "type": "deps",
+                        "release": "patch"
+                    },
+                    {
                         "type": "refactor",
                         "release": false
                     },
                     {
-                        "scope": "docs",
+                        "type": "docs",
                         "release": false
                     },
                     {
-                        "scope": "test",
+                        "type": "style",
                         "release": false
                     },
                     {
-                        "scope": "ci",
+                        "type": "test",
                         "release": false
                     },
                     {
-                        "scope": "chore",
+                        "type": "ci",
+                        "release": false
+                    },
+                    {
+                        "type": "chore",
                         "release": false
                     }
                 ]

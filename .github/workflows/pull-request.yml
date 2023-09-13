@@ -15,12 +15,16 @@ jobs:
 
   eof-newline-check:
     runs-on: ubuntu-latest
-    name: Check all files end in newline
     steps:
       - uses: actions/checkout@v4
       - uses: fernandrone/linelint@master
 
-  lint:
+  lint-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wagoid/commitlint-github-action@v5
+
+  lint-python:
     runs-on: ubuntu-latest
     strategy:
       matrix:
