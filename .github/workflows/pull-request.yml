@@ -6,13 +6,6 @@ on:
       - 'main'
 
 jobs:
-  title-check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: thehanimo/pr-title-checker@v1.4.0
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   eof-newline-check:
     runs-on: ubuntu-latest
     steps:

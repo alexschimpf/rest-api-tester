@@ -5,7 +5,6 @@
 ## Pull Requests
 - All pull requests should be made against the `main` branch
 - All necessary checks are run on pull requests
-  - PR title format check
   - EOF newline check
   - Python linting
   - Python type-checking

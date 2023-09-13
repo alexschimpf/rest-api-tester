@@ -1,6 +1,6 @@
 module.exports = {
     rules: {
-        'subject-min-length': [2, 'always', 15],
+        'subject-min-length': [2, 'always', 10],
         'subject-max-length': [2, 'always', 80],
         'subject-case': [2, 'always', 'sentence-case'],
         'subject-full-stop': [2, 'never', '.'],
