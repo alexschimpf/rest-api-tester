@@ -10,7 +10,7 @@ flake8-use-fstring==1.4
 fastapi==0.103.1
 httpx==0.24.1
 mypy==1.4.1
-pre-commit==3.4.0
+pre-commit==2.21.0
 pydantic==2.3.0
 pytest==7.0.1
 pytest-cov==4.1.0
