@@ -5,7 +5,6 @@
 ## Pull Requests
 - All pull requests should be made against the `main` branch
 - All necessary checks are run on pull requests
-  - EOF newline check
   - Python linting
   - Python type-checking
   - Unit tests
@@ -15,7 +14,7 @@
 - All pull requests with code changes should contain tests or updates to existing tests
   - Exceptions are possible with a sufficient reason
 - Commit messages are linted via [commitlint](https://commitlint.js.org/#/)
-    - Make sure to run step 3 below under Installation for this to install properly
+    - Make sure to run steps 3 and 4 below under `Installation` for this to install properly
     - Commit messages automatically populate the changelog and tags, so they should be clear and readable.
     - Allowed prefixes: breaking, deps, chore, ci, docs, feat, fix, perf, refactor, style, test
     - Commit messages should look like:
@@ -36,9 +35,9 @@
 ```shell
 make install-dev
 ```
-4. Install the python linter commit hook
+4. Install pre-commit hooks
 ```shell
-make install-linter
+make install-pre-commit
 ```
 
 ### Running Tests

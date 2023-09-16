@@ -58,6 +58,6 @@ lint:
 install-dev:
 	pip install -r requirements.dev.txt
 
-# enable commit hook for python linter
-install-linter:
-	pre-commit install
+# install pre-commit
+install-pre-commit:
+	pre-commit install --hook-type commit-msg
