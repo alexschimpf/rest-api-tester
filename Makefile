@@ -60,4 +60,4 @@ install-dev:
 
 # install pre-commit
 install-pre-commit:
-	pre-commit install --hook-type commit-msg
+	pre-commit install --hook-type pre-commit --hook-type commit-msg
