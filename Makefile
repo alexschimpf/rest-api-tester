@@ -21,10 +21,13 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
-
 # build python package
 build:
 	python setup.py sdist
+
+# test install of build
+test-install-build:
+	pip install dist/$(shell ls dist | grep tar.gz | head -1)
 
 # deploy package to pypi
 deploy:
