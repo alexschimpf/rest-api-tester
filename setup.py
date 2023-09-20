@@ -1,4 +1,4 @@
-import ujson
+import json
 from setuptools import setup
 
 
@@ -9,7 +9,7 @@ with open('requirements.txt', 'r') as requirements_file:
     requirements_list = requirements_file.readlines()
 
 with open('package.json', 'r') as package_file:
-    package_dict = ujson.loads(package_file.read().strip())
+    package_dict = json.loads(package_file.read().strip())
     version = package_dict['version']
 
 setup(
@@ -21,12 +21,16 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/alexschimpf/python-rest-api-tester',
-    package_data={'rest_api_tester': ['py.typed']},
     packages=[
+        '',
         'rest_api_tester',
         'rest_api_tester.parser',
         'rest_api_tester.client'
     ],
+    package_data={
+        '': ['README.md', 'requirements.txt', 'package.json'],
+        'rest_api_tester': ['py.typed']
+    },
     classifiers=[
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
