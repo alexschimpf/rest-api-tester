@@ -273,31 +273,35 @@ class TestJSON(TestCase):
         self.verify_test_result(result=result)
 
     def test_update_scenarios_on_fail(self) -> None:
-        scenario_file_path = os.path.join(self.runner.path_to_scenarios_dir, 'test_fastapi.json')
-        with open(scenario_file_path, 'r') as f:
-            original_scenario_file_content = f.read()
-
-        with self.assertRaises(Exception):
-            result = self.runner.run(
-                path_to_test_cases='test_fastapi.json',
-                test_name='test_update_scenarios_on_fail'
-            )
-            self.verify_test_result(result=result, update_scenarios_on_fail=True)
-
+        self.items[1] = 'item1'
         try:
+            scenario_file_path = os.path.join(self.runner.path_to_scenarios_dir, 'test_fastapi.json')
             with open(scenario_file_path, 'r') as f:
-                scenario_dict = ujson.loads(f.read())
-                self.assertDictEqual(
-                    scenario_dict['test_get_protected__200'],
-                    scenario_dict['test_update_scenarios_on_fail']
+                original_scenario_file_content = f.read()
+
+            with self.assertRaises(Exception):
+                result = self.runner.run(
+                    path_to_test_cases='test_fastapi.json',
+                    test_name='test_update_scenarios_on_fail'
                 )
-        except Exception:
-            with open(scenario_file_path, 'w+') as f:
-                f.write(original_scenario_file_content)
-            raise
-        else:
-            with open(scenario_file_path, 'w+') as f:
-                f.write(original_scenario_file_content)
+                self.verify_test_result(result=result, update_scenarios_on_fail=True)
+
+            try:
+                with open(scenario_file_path, 'r') as f:
+                    scenario_dict = ujson.loads(f.read())
+                    self.assertDictEqual(
+                        scenario_dict['test_get_items__200_one_item'],
+                        scenario_dict['test_update_scenarios_on_fail']
+                    )
+            except Exception:
+                with open(scenario_file_path, 'w+') as f:
+                    f.write(original_scenario_file_content)
+                raise
+            else:
+                with open(scenario_file_path, 'w+') as f:
+                    f.write(original_scenario_file_content)
+        finally:
+            self.items.clear()
 
     def custom_verifier(self, result: TestResult) -> None:
         # Only check names
