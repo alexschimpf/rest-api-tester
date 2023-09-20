@@ -1,3 +1,11 @@
+## [2.0.3](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.2...v2.0.3) (2023-09-20)
+
+
+### Bug Fixes
+
+* Fixed issue with update_scenarios_on_fail initialization ([a56af95](https://github.com/alexschimpf/rest-api-tester/commit/a56af952e4310bf6ba689c4f005c8c3389668b0e))
+* Fixed the behavior of update_scenarios_on_fail when handling JSON responses ([dc357c0](https://github.com/alexschimpf/rest-api-tester/commit/dc357c0b66d07b7a5aa7bff60304227782aeea75))
+
 ## [2.0.2](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.1...v2.0.2) (2023-09-20)
 
 
