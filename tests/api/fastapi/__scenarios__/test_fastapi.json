@@ -49,6 +49,10 @@
         "url": "/items",
         "method": "GET",
         "status": 200,
+        "response_headers": {
+            "content-length": "35",
+            "content-type": "application/json"
+        },
         "response": {
             "items": [
                 {
@@ -168,11 +172,8 @@
         "status": 404
     },
     "test_update_scenarios_on_fail": {
-        "url": "/protected",
+        "url": "/items",
         "method": "GET",
-        "status": 400,
-        "headers": {
-            "secret": "s3cr3t!"
-        }
+        "status": 400
     }
 }

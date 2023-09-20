@@ -156,10 +156,16 @@ class TestCase(unittest.TestCase):
             )
 
             if actual_response:
-                if isinstance(actual_response, str):
-                    scenario['response'] = actual_response
-                else:
+                # TODO: Use case-insensitive dict instead?
+                content_type = (
+                    actual_headers.get('Content-Type') or
+                    actual_headers.get('content-type') or
+                    actual_headers.get('CONTENT-TYPE')
+                )
+                if content_type == 'application/json':
                     scenario['response'] = ujson.loads(actual_response)
+                else:
+                    scenario['response'] = actual_response
             else:
                 scenario.pop('response', None)
 
