@@ -50,7 +50,6 @@ class TestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
-        self.update_scenarios_on_fail = False
 
     def verify_test_result(
         self,
@@ -82,7 +81,7 @@ class TestCase(unittest.TestCase):
 
         update_scenarios_on_fail = any((
             update_scenarios_on_fail,
-            self.update_scenarios_on_fail,
+            getattr(self, 'update_scenarios_on_fail', False),
             Config.UPDATE_SCENARIOS_ON_FAIL
         ))
 
