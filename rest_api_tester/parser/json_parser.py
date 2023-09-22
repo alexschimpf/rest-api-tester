@@ -38,8 +38,8 @@ class JSONParser(BaseParser):
             assert isinstance(test_case['allow_redirects'], bool)
 
         request = test_case.get('request')
-        if request:
-            if isinstance(request, dict):
+        if request is not None:
+            if isinstance(request, (dict, list)):
                 request = ujson.dumps(request)
             elif isinstance(request, str):
                 if request.startswith(EXTERNAL_FILE_PREFIX):
@@ -56,8 +56,8 @@ class JSONParser(BaseParser):
             request = ujson.dumps(request_json)
 
         response = test_case.get('response')
-        if response:
-            if isinstance(response, dict):
+        if response is not None:
+            if isinstance(response, (dict, list)):
                 response = ujson.dumps(response)
             elif isinstance(response, str):
                 if response.startswith(EXTERNAL_FILE_PREFIX):
