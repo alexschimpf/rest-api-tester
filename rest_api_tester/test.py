@@ -85,11 +85,11 @@ class TestCase(unittest.TestCase):
             Config.UPDATE_SCENARIOS_ON_FAIL
         ))
 
-        actual_status = result.test_data.expected_status
-        expected_status = result.response.status_code
+        expected_status = result.test_data.expected_status
         expected_response = result.test_data.expected_response
-
+        actual_status = result.response.status_code
         actual_response = result.response.text
+
         if excluded_response_paths:
             actual_response = result.response.json
             for excluded_response_path in excluded_response_paths:
@@ -175,7 +175,7 @@ class TestCase(unittest.TestCase):
     @staticmethod
     def _format_response(response: Union[str, None]) -> Any:
         if response in (None, ''):
-            return '<None>'
+            return '<Empty Response>'
 
         try:
             return pprint.pformat(ujson.loads(response))  # type: ignore
