@@ -3,7 +3,7 @@
     "author": "Alex Schimpf",
     "description": "REST API testing library",
     "keywords": [],
-    "version": "2.0.3",
+    "version": "2.0.4",
     "devDependencies": {
         "@commitlint/cli": "^17.7.1",
         "@commitlint/config-conventional": "^17.7.0",

@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.3...v2.0.4) (2023-09-22)
+
+
+### Bug Fixes
+
+* Fixed handling and formatting of empty requests and responses ([4e08d22](https://github.com/alexschimpf/rest-api-tester/commit/4e08d229e4d853994cb0c5b2763ad1c6b78eedc5))
+
 ## [2.0.3](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.2...v2.0.3) (2023-09-20)
 
 
