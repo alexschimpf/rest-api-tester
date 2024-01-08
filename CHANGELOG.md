@@ -1,3 +1,10 @@
+## [3.0.0](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.4...v3.0.0) (2024-01-08)
+
+
+### Breaking Changes
+
+* Added ability to add a description for each test case. Now allowing a list of test_data_modifiers. Added `response_header_modifiers` and `request_header_modifiers` params. Made `update_scenarios_on_fail` a proper instance var of TestCase. Simplified package imports. Fixed `test_data_modifier` param  description. Fixed `excluded_response_paths` bug where excluded response fields were not being properly applied to expected response. Added `update_scenarios_on_fail_options` param. ([8841538](https://github.com/alexschimpf/rest-api-tester/commit/88415387f9313dbe67854e8de921be2ede388dcf))
+
 ## [2.0.4](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.3...v2.0.4) (2023-09-22)
 
 
