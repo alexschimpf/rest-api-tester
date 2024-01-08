@@ -15,6 +15,5 @@ jobs:
       - run: make build
       - run: make test-install-build
       - env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: make deploy
