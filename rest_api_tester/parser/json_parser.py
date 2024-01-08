@@ -17,7 +17,9 @@ class JSONParser(BaseParser):
         path_to_test_cases: str,
         test_name: str,
         request_json_modifiers: Union[Dict[str, Any], None],
-        response_json_modifiers: Union[Dict[str, Any], None]
+        response_json_modifiers: Union[Dict[str, Any], None],
+        request_header_modifiers: Union[Dict[str, Any], None],
+        response_header_modifiers: Union[Dict[str, Any], None],
     ) -> TestData:
         test_cases_file_path = os.path.join(path_to_scenarios_dir, path_to_test_cases)
         with open(test_cases_file_path, 'r') as f:
@@ -55,6 +57,12 @@ class JSONParser(BaseParser):
                 request_json = utils.json_update(j=request_json, path=path, value=value)
             request = ujson.dumps(request_json)
 
+        if request_header_modifiers:
+            headers = test_case.get('headers') or {}
+            for path, value in request_header_modifiers.items():
+                headers = utils.json_update(j=headers, path=path, value=value)
+            test_case['headers'] = headers
+
         response = test_case.get('response')
         if response is not None:
             if isinstance(response, (dict, list)):
@@ -73,6 +81,12 @@ class JSONParser(BaseParser):
                 response_json = utils.json_update(j=response_json, path=path, value=value)
             response = ujson.dumps(response_json)
 
+        if response_header_modifiers:
+            response_headers = test_case.get('response_headers') or {}
+            for path, value in response_header_modifiers.items():
+                response_headers = utils.json_update(j=response_headers, path=path, value=value)
+            test_case['response_headers'] = response_headers
+
         headers = test_case.get('headers')
         if headers:
             headers = {
@@ -90,5 +104,6 @@ class JSONParser(BaseParser):
             expected_response=response,
             expected_headers=test_case.get('response_headers'),
             allow_redirects=test_case.get('allow_redirects', True),
-            file_path=test_cases_file_path
+            file_path=test_cases_file_path,
+            description=test_case.get('description')
         )

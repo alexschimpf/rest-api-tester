@@ -1,4 +1,4 @@
-from typing import Any, Union, Callable, cast, Dict, Type
+from typing import Any, Union, Callable, cast, Dict, Type, List
 
 from rest_api_tester.client.base_client import BaseTestClient
 from rest_api_tester.test import TestResult, TestData
@@ -40,9 +40,11 @@ class TestCaseRunner:
         test_name: str,
         url_params: Union[Dict[str, Any], None] = None,
         file_parser: Type[BaseParser] = JSONParser,
-        test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
+        test_data_modifier: Union[Callable[[TestData], TestData], List[Callable[[TestData], TestData]], None] = None,
         request_json_modifiers: Union[Dict[str, Any], None] = None,
-        response_json_modifiers: Union[Dict[str, Any], None] = None
+        response_json_modifiers: Union[Dict[str, Any], None] = None,
+        request_header_modifiers: Union[Dict[str, Any], None] = None,
+        response_header_modifiers: Union[Dict[str, Any], None] = None
     ) -> TestResult:
         """
         Runs a test and returns a TestResult
@@ -59,7 +61,7 @@ class TestCaseRunner:
             This class parses a test cases file and returns a TestData object for a given test case
         :param test_data_modifier:
             Function to modify the test data before the test is run.
-            This is done after `request_template_vars` and `response_template_vars` are processed.
+            This can also be a list of functions that will be run in sequence.
         :param request_json_modifiers:
             A dict of (JSON path => value) key-value pairs.
             The element(s) at each path in the request body JSON will be updated with the given value.
@@ -70,6 +72,10 @@ class TestCaseRunner:
             The element(s) at each path in the expected response JSON will be updated with the given value.
             See `rest_api_tester.utils.json_update` for more details.
             This can be used to modify values in the expected response JSON dynamically at runtime.
+        :param request_header_modifiers:
+            Similar to `request_json_modifiers` except for request headers
+        :param response_header_modifiers
+            Similar to `response_json_modifiers` except for response headers
         """
 
         test_data = self._get_test_data(
@@ -79,7 +85,9 @@ class TestCaseRunner:
             file_parser=file_parser,
             test_data_modifier=test_data_modifier,
             request_json_modifiers=request_json_modifiers,
-            response_json_modifiers=response_json_modifiers
+            response_json_modifiers=response_json_modifiers,
+            request_header_modifiers=request_header_modifiers,
+            response_header_modifiers=response_header_modifiers,
         )
         return self._run(test_data=test_data)
 
@@ -89,16 +97,20 @@ class TestCaseRunner:
         test_name: str,
         url_params: Union[Dict[str, Any], None] = None,
         file_parser: Type[BaseParser] = JSONParser,
-        test_data_modifier: Union[Callable[[TestData], TestData], None] = None,
+        test_data_modifier: Union[Callable[[TestData], TestData], List[Callable[[TestData], TestData]], None] = None,
         request_json_modifiers: Union[Dict[str, Any], None] = None,
-        response_json_modifiers: Union[Dict[str, Any], None] = None
+        response_json_modifiers: Union[Dict[str, Any], None] = None,
+        request_header_modifiers: Union[Dict[str, Any], None] = None,
+        response_header_modifiers: Union[Dict[str, Any], None] = None
     ) -> TestData:
         test_data = file_parser.parse(
             path_to_scenarios_dir=self.path_to_scenarios_dir,
             path_to_test_cases=path_to_test_cases,
             test_name=test_name,
             request_json_modifiers=request_json_modifiers,
-            response_json_modifiers=response_json_modifiers
+            response_json_modifiers=response_json_modifiers,
+            request_header_modifiers=request_header_modifiers,
+            response_header_modifiers=response_header_modifiers
         )
 
         test_data.headers = test_data.headers or {}
@@ -109,7 +121,11 @@ class TestCaseRunner:
             test_data.url = test_data.url.format(**url_params)
 
         if test_data_modifier:
-            test_data = test_data_modifier(test_data)
+            if isinstance(test_data_modifier, list):
+                for func in test_data_modifier:
+                    test_data = func(test_data)
+            else:
+                test_data = test_data_modifier(test_data)
 
         return test_data
 

@@ -7,7 +7,7 @@ from fastapi import FastAPI, Header
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel
 
-from rest_api_tester.test import TestCase, TestData, TestResult
+from rest_api_tester.test import TestCase, TestData, TestResult, UpdateScenariosOnFailOptions
 from rest_api_tester.runner import TestCaseRunner
 
 from tests.api.fastapi.fastapi_test_client import FastAPITestClient
@@ -189,6 +189,27 @@ class TestJSON(TestCase):
         finally:
             self.items.clear()
 
+    def test_create_item__200_with_test_data_modifiers(self) -> None:
+        def modifier1(test_data: TestData) -> TestData:
+            test_data.request_data = ujson.dumps({'name': 'blah'})
+            return test_data
+
+        def modifier2(test_data: TestData) -> TestData:
+            new_test_data = test_data.request_data_json
+            new_test_data['name'] = new_test_data['name'].upper()
+            test_data.request_data = ujson.dumps(new_test_data)
+            return test_data
+
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_with_test_data_modifiers',
+                test_data_modifier=[modifier1, modifier2]
+            )
+            self.verify_test_result(result=result)
+        finally:
+            self.items.clear()
+
     def test_create_item__200_no_name(self) -> None:
         try:
             result = self.runner.run(
@@ -204,17 +225,23 @@ class TestJSON(TestCase):
         finally:
             self.items.clear()
 
-    def test_create_item__200_template_vars(self) -> None:
+    def test_create_item__200_json_modifiers(self) -> None:
         try:
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
-                test_name='test_create_item__200_template_vars',
+                test_name='test_create_item__200_json_modifiers',
                 request_json_modifiers={
                     'name': 'alex'
                 },
                 response_json_modifiers={
                     'id': 1,
                     'name': 'alex'
+                },
+                request_header_modifiers={
+                    'blah': 'test'
+                },
+                response_header_modifiers={
+                    'content-length': '22'
                 }
             )
             self.verify_test_result(result=result)
@@ -226,6 +253,19 @@ class TestJSON(TestCase):
             result = self.runner.run(
                 path_to_test_cases='test_fastapi.json',
                 test_name='test_create_item__200_excluded_response_paths'
+            )
+            self.verify_test_result(
+                result=result,
+                excluded_response_paths=['id']
+            )
+        finally:
+            self.items.clear()
+
+    def test_create_item__200_excluded_response_paths_2(self) -> None:
+        try:
+            result = self.runner.run(
+                path_to_test_cases='test_fastapi.json',
+                test_name='test_create_item__200_excluded_response_paths_2'
             )
             self.verify_test_result(
                 result=result,
@@ -272,6 +312,41 @@ class TestJSON(TestCase):
         )
         self.verify_test_result(result=result)
 
+    def test_update_scenarios_on_fail__enable_header_update(self) -> None:
+        self.items[1] = 'item1'
+        try:
+            scenario_file_path = os.path.join(self.runner.path_to_scenarios_dir, 'test_fastapi.json')
+            with open(scenario_file_path, 'r') as f:
+                original_scenario_file_content = f.read()
+
+            with self.assertRaises(Exception):
+                result = self.runner.run(
+                    path_to_test_cases='test_fastapi.json',
+                    test_name='test_update_scenarios_on_fail__enable_header_update'
+                )
+                options = UpdateScenariosOnFailOptions(update_headers=True)
+                self.verify_test_result(
+                    result=result, update_scenarios_on_fail=True,
+                    update_scenarios_on_fail_options=options
+                )
+
+            try:
+                with open(scenario_file_path, 'r') as f:
+                    scenario_dict = ujson.loads(f.read())
+                    self.assertDictEqual(
+                        scenario_dict['test_get_items__200_one_item_with_response_headers'],
+                        scenario_dict['test_update_scenarios_on_fail__enable_header_update']
+                    )
+            except Exception:
+                with open(scenario_file_path, 'w+') as f:
+                    f.write(original_scenario_file_content)
+                raise
+            else:
+                with open(scenario_file_path, 'w+') as f:
+                    f.write(original_scenario_file_content)
+        finally:
+            self.items.clear()
+
     def test_update_scenarios_on_fail(self) -> None:
         self.items[1] = 'item1'
         try:
@@ -284,7 +359,9 @@ class TestJSON(TestCase):
                     path_to_test_cases='test_fastapi.json',
                     test_name='test_update_scenarios_on_fail'
                 )
-                self.verify_test_result(result=result, update_scenarios_on_fail=True)
+                self.verify_test_result(
+                    result=result, update_scenarios_on_fail=True
+                )
 
             try:
                 with open(scenario_file_path, 'r') as f:

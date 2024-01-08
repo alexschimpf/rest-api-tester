@@ -6,6 +6,7 @@
         "response": "OK"
     },
     "test_get_protected__200": {
+        "description": "Make sure /protected route is actually protected via secret header",
         "url": "/protected",
         "method": "GET",
         "status": 200,
@@ -46,6 +47,19 @@
         }
     },
     "test_get_items__200_one_item": {
+        "url": "/items",
+        "method": "GET",
+        "status": 200,
+        "response": {
+            "items": [
+                {
+                    "id": 1,
+                    "name": "item1"
+                }
+            ]
+        }
+    },
+    "test_get_items__200_one_item_with_response_headers": {
         "url": "/items",
         "method": "GET",
         "status": 200,
@@ -107,6 +121,15 @@
             "name": "blah"
         }
     },
+    "test_create_item__200_with_test_data_modifiers": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "response": {
+            "id": 1,
+            "name": "BLAH"
+        }
+    },
     "test_create_item__200_no_name": {
         "url": "/items",
         "method": "POST",
@@ -119,15 +142,22 @@
             "name": null
         }
     },
-    "test_create_item__200_template_vars": {
+    "test_create_item__200_json_modifiers": {
         "url": "/items",
         "method": "POST",
         "status": 200,
+        "headers": {
+            "blah": "$$$"
+        },
         "request": {
             "name": "%%request_name*%"
         },
         "response": {
             "name": "%%response_name%%"
+        },
+        "response_headers": {
+            "content-length": "$$$",
+            "content-type": "application/json"
         }
     },
     "test_create_item__200_excluded_response_paths": {
@@ -138,6 +168,18 @@
             "name": "item1"
         },
         "response": {
+            "name": "item1"
+        }
+    },
+    "test_create_item__200_excluded_response_paths_2": {
+        "url": "/items",
+        "method": "POST",
+        "status": 200,
+        "request": {
+            "name": "item1"
+        },
+        "response": {
+            "id": "$$$",
             "name": "item1"
         }
     },
@@ -172,6 +214,11 @@
         "status": 404
     },
     "test_update_scenarios_on_fail": {
+        "url": "/items",
+        "method": "GET",
+        "status": 400
+    },
+    "test_update_scenarios_on_fail__enable_header_update": {
         "url": "/items",
         "method": "GET",
         "status": 400
