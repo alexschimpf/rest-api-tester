@@ -31,11 +31,11 @@ test-install-build:
 
 # deploy package to pypi
 deploy:
-	twine upload dist/*
+	twine upload -u __token__ -p $PYPI_API_TOKEN dist/*
 
 # test pypi deployment
 deploy-test:
-	twine upload -r testpypi dist/*
+	twine upload -r testpypi -u __token__ -p $PYPI_TEST_API_TOKEN dist/*
 
 # run all tests with coverage
 run-tests:
