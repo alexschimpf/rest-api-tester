@@ -13,6 +13,8 @@ class BaseParser(ABC):
         path_to_test_cases: str,
         test_name: str,
         request_json_modifiers: Union[Dict[str, Any], None],
-        response_json_modifiers: Union[Dict[str, Any], None]
+        response_json_modifiers: Union[Dict[str, Any], None],
+        request_header_modifiers: Union[Dict[str, Any], None],
+        response_header_modifiers: Union[Dict[str, Any], None]
     ) -> TestData:
         ...

@@ -5,7 +5,6 @@ import pprint
 import ujson
 
 from rest_api_tester.client.response_data import ResponseData
-from rest_api_tester.config import Config
 from rest_api_tester import utils
 
 
@@ -22,6 +21,7 @@ class TestData:
     expected_status: int
     expected_response: Union[str, None]
     expected_headers: Union[Dict[str, Any], None]
+    description: Union[str, None]
     file_path: str
     __test__ = False
 
@@ -46,17 +46,27 @@ class TestResult:
     __test__ = False
 
 
+@dataclass
+class UpdateScenariosOnFailOptions:
+
+    update_headers: bool = False
+
+
 class TestCase(unittest.TestCase):
 
-    def setUp(self) -> None:
+    def __init__(self, methodName: str = 'runTest') -> None:
         self.maxDiff = None
+        self.update_scenarios_on_fail = False
+        self.update_scenarios_on_fail_options = UpdateScenariosOnFailOptions()
+        super().__init__(methodName=methodName)
 
     def verify_test_result(
         self,
         result: TestResult,
         verifier: Union[Callable[[TestResult], None], None] = None,
         excluded_response_paths: Union[List[str], None] = None,
-        update_scenarios_on_fail: bool = False
+        update_scenarios_on_fail: bool = False,
+        update_scenarios_on_fail_options: Union[UpdateScenariosOnFailOptions, None] = None
     ) -> None:
         """
         Verifies that the test case result matches what is expected
@@ -75,15 +85,18 @@ class TestCase(unittest.TestCase):
             If True, scenario files will automatically be updated when tests fail.
             This can be useful if you want to quickly set up your test scenarios.
             This can also be set for the entire test case instance via the instance
-            variable `update_scenarios_on_fail` or globally via `Config.UPDATE_SCENARIOS_ON_FAIL`.
+            variable `update_scenarios_on_fail`.
             Note: This may corrupt scenario files if tests are run in parallel or if tests are abruptly killed.
+        :param update_scenarios_on_fail_options:
+            Options for `update_scenarios_on_fail` behavior
         """
 
         update_scenarios_on_fail = any((
             update_scenarios_on_fail,
-            getattr(self, 'update_scenarios_on_fail', False),
-            Config.UPDATE_SCENARIOS_ON_FAIL
+            self.update_scenarios_on_fail
         ))
+
+        update_scenarios_on_fail_options = update_scenarios_on_fail_options or self.update_scenarios_on_fail_options
 
         expected_status = result.test_data.expected_status
         expected_response = result.test_data.expected_response
@@ -91,15 +104,19 @@ class TestCase(unittest.TestCase):
         actual_response = result.response.text
 
         if excluded_response_paths:
-            actual_response = result.response.json
+            actual_response_dict = result.response.json
+            expected_response_dict = result.test_data.expected_response_json
             for excluded_response_path in excluded_response_paths:
-                actual_response = utils.json_remove(j=actual_response, path=excluded_response_path)
-            actual_response = ujson.dumps(actual_response)
-            result.response.text = actual_response
+                actual_response_dict = utils.json_update(
+                    j=actual_response_dict, path=excluded_response_path, value='$$$')
+                expected_response_dict = utils.json_update(
+                    j=expected_response_dict, path=excluded_response_path, value='$$$')
+            result.response.text = ujson.dumps(actual_response_dict)
+            result.test_data.expected_response = ujson.dumps(expected_response_dict)
 
         try:
             # Check status
-            message = '\n'.join([
+            message = [
                 '',
                 'Expected Response:',
                 self._format_response(response=expected_response),
@@ -107,8 +124,11 @@ class TestCase(unittest.TestCase):
                 'Actual Response:',
                 self._format_response(response=actual_response),
                 ''
-            ])
-            self.assertEqual(expected_status, actual_status, message)
+            ]
+            if result.test_data.description:
+                message = ['', f'Test Description: {result.test_data.description}', ''] + message
+            message_str = '\n'.join(message)
+            self.assertEqual(expected_status, actual_status, message_str)
 
             # Check response body
             verifier = verifier or self.default_verifier
@@ -118,10 +138,13 @@ class TestCase(unittest.TestCase):
             expected_headers = result.test_data.expected_headers
             if expected_headers:
                 actual_headers = result.response.headers
-                self.assertDictEqual(expected_headers, dict(actual_headers), 'Headers do not match')
+                message = ['', 'Headers do not match', '']
+                if result.test_data.description:
+                    message = ['', f'Test Description: {result.test_data.description}', ''] + message
+                self.assertDictEqual(expected_headers, dict(actual_headers), '\n'.join(message))
         except Exception:
             if update_scenarios_on_fail:
-                self._update_scenario(result=result)
+                self._update_scenario(result=result, options=update_scenarios_on_fail_options)
             raise
 
     def default_verifier(self, result: TestResult) -> None:
@@ -140,7 +163,7 @@ class TestCase(unittest.TestCase):
                 self.assertEqual(expected_response, actual_response)
 
     @staticmethod
-    def _update_scenario(result: TestResult) -> None:
+    def _update_scenario(result: TestResult, options: UpdateScenariosOnFailOptions) -> None:
         actual_response = result.response.text
         actual_status = result.response.status_code
         actual_headers = result.response.headers
@@ -150,10 +173,9 @@ class TestCase(unittest.TestCase):
         with open(result.test_data.file_path, 'r') as f:
             scenarios = ujson.loads(f.read())
             scenario = scenarios[result.test_data.name]
-            scenario.update(
-                response_headers=actual_headers,
-                status=actual_status
-            )
+            scenario['status'] = actual_status
+            if options.update_headers:
+                scenario['response_headers'] = actual_headers
 
             if actual_response:
                 # TODO: Use case-insensitive dict instead?

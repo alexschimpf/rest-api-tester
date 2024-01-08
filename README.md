@@ -39,12 +39,15 @@ class TestSomething(TestCase):
     ...
 ```
 
-3. Set up your test case runner
+3. Create a test client implementation (see [here](https://github.com/alexschimpf/python-rest-api-tester/tree/main/tests/api/fastapi/fastapi_test_client.py) for an example)
+
+4. Set up your test case runner
 ```python
 import os
-from rest_api_tester.client import TestClient
-from rest_api_tester.test import TestCase
-from rest_api_tester.runner import TestCaseRunner
+from rest_api_tester import TestCase, TestCaseRunner
+
+<import your TestClient class here>
+
 
 class TestSomething(TestCase):
 
@@ -58,7 +61,7 @@ class TestSomething(TestCase):
         )
 ```
 
-4. Create your first API test
+5. Create your first API test
 ```python
 class TestSomething(TestCase):
 
@@ -72,10 +75,11 @@ class TestSomething(TestCase):
         self.verify_test_result(result=result)
 ```
 
-5. Add a more complicated test
+6. Add a more complicated test
 ```json
 {
     "update_something": {
+        "description": "Make sure PUT /something/{id} returns a 200",
         "url": "/something/{id}",
         "method": "PUT",
         "status": 200,
@@ -167,11 +171,12 @@ Thus, your test scenarios need to be augmented. `rest-api-tester` offers various
     - Note that this is similar but not quite the same as JsonPath expressions (e.g. https://github.com/json-path/JsonPath)
     - For example, `{'a.[1].b.*c': 3}` will modify set `item['c'] = 3` for all items of `request_json['a'][1]['b']`.
 3. Similarly, you can modify your scenario expected response JSON data at runtime by using `response_json_modifiers` from `TestCaseRunner.run`.
-4. If you want to exclude some response fields from verification, you can use `excluded_response_paths` from `TestCase.verify_test_result`
+4. You can also modify request headers and expected response headers at runtime by using `request_header_modifiers` and `response_header_modifiers` from `TestCaseRunner.run`.
+5. If you want to exclude some response fields from verification, you can use `excluded_response_paths` from `TestCase.verify_test_result`
    - This will be a list of the same kind of JSON paths from `request_json_modifiers` and `response_json_modifiers`.
    - This can be useful if certain fields from the response can't be easily known at runtime.
-5. If you'd like more fine-grained, programmatic control over test scenario data before a test is actually run, you can use `test_data_modifier` from `TestCaseRunner.run`.
-    - This requires passing a function which accepts a `TestData` parameter and returns the modified `TestData`.
+6. If you'd like more fine-grained, programmatic control over test scenario data before a test is actually run, you can use `test_data_modifier` from `TestCaseRunner.run`.
+    - This requires passing a function (or list of functions) which accepts a `TestData` parameter and returns the modified `TestData`.
     - The `TestData` object contains all the parsed test scenario data before the test has been executed (i.e. the client has made an API call).
     - This can be used to add authentication headers/cookies that may not be known until runtime.
 
@@ -179,9 +184,10 @@ Thus, your test scenarios need to be augmented. `rest-api-tester` offers various
 `rest-api-tester` can also auto-update your scenario files for you when tests fail.
 For example, if you run your tests, but your response data does not match, `rest-api-tester` can automatically update the scenario's expected response details based on what the actual API response was.
 This can be done in one of the following ways:
-- Setting `rest_api_tester.config.Config.UPDATE_SCENARIOS_ON_FAIL = true`.
 - Setting `self.update_scenarios_on_fail = True` in `TestCase.setup`.
-- Passing `update_scenarios_on_fail = True` in `TestCase.verify_test_result`
+- Passing `update_scenarios_on_fail = True` to `TestCase.verify_test_result`
+
+You can modify the default behavior of `update_scenarios_on_fail` by setting `self.update_scenarios_on_fail_options` in `TestCase.setUp` or by passing `update_scenarios_on_fail_options` to `TestCase.verify_test_result`.
 
 <b>Please note that scenario files can become corrupted if tests run in parallel and update the same file.
 Corruption can also happen if the tests are force-killed in the middle of writing to scenario files.</b>
