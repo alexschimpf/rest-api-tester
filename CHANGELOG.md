@@ -1,3 +1,10 @@
+## [4.0.0](https://github.com/alexschimpf/rest-api-tester/compare/v3.0.0...v4.0.0) (2024-03-14)
+
+
+### Breaking Changes
+
+* Changed how update_scenarios_on_fail writes placeholder text ([59703f9](https://github.com/alexschimpf/rest-api-tester/commit/59703f948a0a3ddd7fbdd037d5108e9f292d5ede))
+
 ## [3.0.0](https://github.com/alexschimpf/rest-api-tester/compare/v2.0.4...v3.0.0) (2024-01-08)
 
 
