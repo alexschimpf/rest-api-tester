@@ -193,7 +193,7 @@ class TestCase(unittest.TestCase):
                     actual_headers.get('content-type') or
                     actual_headers.get('CONTENT-TYPE')
                 )
-                if content_type == 'application/json':
+                if 'application/json' in (content_type or ''):
                     if result.test_data.response_json_modifiers:
                         actual_response_dict = ujson.loads(actual_response)
                         for response_path in result.test_data.response_json_modifiers.keys():
