@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.1...v4.0.2) (2024-03-14)
+
+
+### Bug Fixes
+
+* Fixed update_scenarios_on_fail handling of content-type ([38641ea](https://github.com/alexschimpf/rest-api-tester/commit/38641ea49eef85fa1e0f78a88322cca9472742ed))
+
 ## [4.0.1](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.0...v4.0.1) (2024-03-14)
 
 
