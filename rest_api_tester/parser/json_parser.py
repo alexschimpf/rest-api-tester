@@ -52,7 +52,7 @@ class JSONParser(BaseParser):
                 raise Exception('Request format is invalid')
 
         if request_json_modifiers:
-            request_json = ujson.loads(request)
+            request_json = ujson.loads(request or '{}')
             for path, value in request_json_modifiers.items():
                 request_json = utils.json_update(j=request_json, path=path, value=value)
             request = ujson.dumps(request_json)
@@ -76,7 +76,7 @@ class JSONParser(BaseParser):
                 raise Exception('Response format is invalid')
 
         if response_json_modifiers:
-            response_json = ujson.loads(response)
+            response_json = ujson.loads(response or '{}')
             for path, value in response_json_modifiers.items():
                 response_json = utils.json_update(j=response_json, path=path, value=value)
             response = ujson.dumps(response_json)
