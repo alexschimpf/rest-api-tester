@@ -23,6 +23,8 @@ class TestData:
     expected_headers: Union[Dict[str, Any], None]
     description: Union[str, None]
     file_path: str
+    response_json_modifiers: Union[Dict[str, Any], None] = None
+    response_header_modifiers: Union[Dict[str, Any], None] = None
     __test__ = False
 
     @property
@@ -50,6 +52,7 @@ class TestResult:
 class UpdateScenariosOnFailOptions:
 
     update_headers: bool = False
+    placeholder_text: str = '???'
 
 
 class TestCase(unittest.TestCase):
@@ -104,13 +107,14 @@ class TestCase(unittest.TestCase):
         actual_response = result.response.text
 
         if excluded_response_paths:
+            placeholder_text = update_scenarios_on_fail_options.placeholder_text
             actual_response_dict = result.response.json
             expected_response_dict = result.test_data.expected_response_json
             for excluded_response_path in excluded_response_paths:
                 actual_response_dict = utils.json_update(
-                    j=actual_response_dict, path=excluded_response_path, value='$$$')
+                    j=actual_response_dict, path=excluded_response_path, value=placeholder_text)
                 expected_response_dict = utils.json_update(
-                    j=expected_response_dict, path=excluded_response_path, value='$$$')
+                    j=expected_response_dict, path=excluded_response_path, value=placeholder_text)
             result.response.text = ujson.dumps(actual_response_dict)
             result.test_data.expected_response = ujson.dumps(expected_response_dict)
 
@@ -175,6 +179,11 @@ class TestCase(unittest.TestCase):
             scenario = scenarios[result.test_data.name]
             scenario['status'] = actual_status
             if options.update_headers:
+                if result.test_data.response_header_modifiers:
+                    for response_path in result.test_data.response_header_modifiers.keys():
+                        actual_headers = utils.json_update(
+                            j=actual_headers, path=response_path, value=options.placeholder_text)
+
                 scenario['response_headers'] = actual_headers
 
             if actual_response:
@@ -185,6 +194,13 @@ class TestCase(unittest.TestCase):
                     actual_headers.get('CONTENT-TYPE')
                 )
                 if content_type == 'application/json':
+                    if result.test_data.response_json_modifiers:
+                        actual_response_dict = ujson.loads(actual_response)
+                        for response_path in result.test_data.response_json_modifiers.keys():
+                            actual_response_dict = utils.json_update(
+                                j=actual_response_dict, path=response_path, value=options.placeholder_text)
+                        actual_response = ujson.dumps(actual_response_dict)
+
                     scenario['response'] = ujson.loads(actual_response)
                 else:
                     scenario['response'] = actual_response
