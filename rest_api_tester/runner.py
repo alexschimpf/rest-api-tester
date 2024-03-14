@@ -113,6 +113,9 @@ class TestCaseRunner:
             response_header_modifiers=response_header_modifiers
         )
 
+        test_data.response_json_modifiers = response_json_modifiers
+        test_data.response_header_modifiers = response_header_modifiers
+
         test_data.headers = test_data.headers or {}
         if self.default_content_type and 'content-type' not in test_data.headers:
             test_data.headers['content-type'] = self.default_content_type
