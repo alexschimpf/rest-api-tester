@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.0...v4.0.1) (2024-03-14)
+
+
+### Bug Fixes
+
+* Proper parser handling of json modifiers with missing request/response ([64191a9](https://github.com/alexschimpf/rest-api-tester/commit/64191a950ac9bed6d424db61c3be58b193606b97))
+
 ## [4.0.0](https://github.com/alexschimpf/rest-api-tester/compare/v3.0.0...v4.0.0) (2024-03-14)
 
 
