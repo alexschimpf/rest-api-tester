@@ -1,3 +1,5 @@
+## [4.0.3](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.2...v4.0.3) (2024-03-15)
+
 ## [4.0.2](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.1...v4.0.2) (2024-03-14)
 
 
