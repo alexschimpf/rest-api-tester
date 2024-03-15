@@ -1,7 +1,7 @@
 import os
 import string
 import random
-import ujson
+import json
 from typing import Union, Any, Dict
 from fastapi import FastAPI, Header
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
@@ -176,7 +176,7 @@ class TestJSON(TestCase):
 
     def test_create_item__200_with_test_data_modifier(self) -> None:
         def modifier(test_data: TestData) -> TestData:
-            test_data.request_data = ujson.dumps({'name': 'blah'})
+            test_data.request_data = json.dumps({'name': 'blah'})
             return test_data
 
         try:
@@ -191,13 +191,13 @@ class TestJSON(TestCase):
 
     def test_create_item__200_with_test_data_modifiers(self) -> None:
         def modifier1(test_data: TestData) -> TestData:
-            test_data.request_data = ujson.dumps({'name': 'blah'})
+            test_data.request_data = json.dumps({'name': 'blah'})
             return test_data
 
         def modifier2(test_data: TestData) -> TestData:
             new_test_data = test_data.request_data_json
             new_test_data['name'] = new_test_data['name'].upper()
-            test_data.request_data = ujson.dumps(new_test_data)
+            test_data.request_data = json.dumps(new_test_data)
             return test_data
 
         try:
@@ -332,7 +332,7 @@ class TestJSON(TestCase):
 
             try:
                 with open(scenario_file_path, 'r') as f:
-                    scenario_dict = ujson.loads(f.read())
+                    scenario_dict = json.loads(f.read())
                     self.assertDictEqual(
                         scenario_dict['test_get_items__200_one_item_with_response_headers'],
                         scenario_dict['test_update_scenarios_on_fail__enable_header_update']
@@ -365,7 +365,7 @@ class TestJSON(TestCase):
 
             try:
                 with open(scenario_file_path, 'r') as f:
-                    scenario_dict = ujson.loads(f.read())
+                    scenario_dict = json.loads(f.read())
                     self.assertDictEqual(
                         scenario_dict['test_get_items__200_one_item'],
                         scenario_dict['test_update_scenarios_on_fail']
@@ -391,5 +391,5 @@ class TestJSON(TestCase):
     def _modify_expected_response(test_data: TestData, **kwargs: Dict[str, Any]) -> TestData:
         expected_response_json = test_data.expected_response_json
         expected_response_json.update(**kwargs)
-        test_data.expected_response = ujson.dumps(expected_response_json)
+        test_data.expected_response = json.dumps(expected_response_json)
         return test_data
