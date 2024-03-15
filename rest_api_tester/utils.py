@@ -1,5 +1,5 @@
 from typing import Any
-import ujson
+import json
 
 
 def json_remove(j: Any, path: str) -> Any:
@@ -33,7 +33,7 @@ def json_remove(j: Any, path: str) -> Any:
 
     tokens = path.split('.')
 
-    j = ujson.loads(ujson.dumps(j))
+    j = json.loads(json.dumps(j))
     orig = j
 
     for token in tokens[:-1]:
@@ -119,7 +119,7 @@ def json_update(j: Any, path: str, value: Any) -> Any:
 
     tokens = path.split('.')
 
-    j = ujson.loads(ujson.dumps(j))
+    j = json.loads(json.dumps(j))
     orig = j
 
     for token in tokens[:-1]:

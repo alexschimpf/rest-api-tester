@@ -1,5 +1,5 @@
 import os
-import ujson
+import json
 from typing import Any, Union, Dict
 
 from rest_api_tester.test import TestData
@@ -23,7 +23,7 @@ class JSONParser(BaseParser):
     ) -> TestData:
         test_cases_file_path = os.path.join(path_to_scenarios_dir, path_to_test_cases)
         with open(test_cases_file_path, 'r') as f:
-            test_cases = ujson.loads(f.read())
+            test_cases = json.loads(f.read())
 
         test_case = test_cases[test_name]
 
@@ -42,7 +42,7 @@ class JSONParser(BaseParser):
         request = test_case.get('request')
         if request is not None:
             if isinstance(request, (dict, list)):
-                request = ujson.dumps(request)
+                request = json.dumps(request)
             elif isinstance(request, str):
                 if request.startswith(EXTERNAL_FILE_PREFIX):
                     request_file_path = os.path.join(path_to_scenarios_dir, request[len(EXTERNAL_FILE_PREFIX):])
@@ -52,10 +52,10 @@ class JSONParser(BaseParser):
                 raise Exception('Request format is invalid')
 
         if request_json_modifiers:
-            request_json = ujson.loads(request or '{}')
+            request_json = json.loads(request or '{}')
             for path, value in request_json_modifiers.items():
                 request_json = utils.json_update(j=request_json, path=path, value=value)
-            request = ujson.dumps(request_json)
+            request = json.dumps(request_json)
 
         if request_header_modifiers:
             headers = test_case.get('headers') or {}
@@ -66,7 +66,7 @@ class JSONParser(BaseParser):
         response = test_case.get('response')
         if response is not None:
             if isinstance(response, (dict, list)):
-                response = ujson.dumps(response)
+                response = json.dumps(response)
             elif isinstance(response, str):
                 if response.startswith(EXTERNAL_FILE_PREFIX):
                     response_file_path = os.path.join(path_to_scenarios_dir, response[len(EXTERNAL_FILE_PREFIX):])
@@ -76,10 +76,10 @@ class JSONParser(BaseParser):
                 raise Exception('Response format is invalid')
 
         if response_json_modifiers:
-            response_json = ujson.loads(response or '{}')
+            response_json = json.loads(response or '{}')
             for path, value in response_json_modifiers.items():
                 response_json = utils.json_update(j=response_json, path=path, value=value)
-            response = ujson.dumps(response_json)
+            response = json.dumps(response_json)
 
         if response_header_modifiers:
             response_headers = test_case.get('response_headers') or {}

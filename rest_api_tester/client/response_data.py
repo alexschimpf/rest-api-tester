@@ -1,4 +1,4 @@
-import ujson
+import json
 from dataclasses import dataclass
 from typing import Any, Union, Dict
 
@@ -13,4 +13,4 @@ class ResponseData:
 
     @property
     def json(self) -> Any:
-        return ujson.loads(self.text)
+        return json.loads(self.text)

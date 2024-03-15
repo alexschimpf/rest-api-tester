@@ -5,9 +5,6 @@ from setuptools import setup
 with open('README.md', 'r') as readme_file:
     long_description = readme_file.read()
 
-with open('requirements.txt', 'r') as requirements_file:
-    requirements_list = requirements_file.readlines()
-
 with open('package.json', 'r') as package_file:
     package_dict = json.loads(package_file.read().strip())
     version = package_dict['version']
@@ -28,7 +25,7 @@ setup(
         'rest_api_tester.client'
     ],
     package_data={
-        '': ['README.md', 'requirements.txt', 'package.json'],
+        '': ['README.md', 'package.json'],
         'rest_api_tester': ['py.typed']
     },
     classifiers=[
@@ -38,6 +35,5 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11'
     ],
-    install_requires=requirements_list,
     python_requires='>=3.7'
 )

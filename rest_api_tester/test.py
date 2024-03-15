@@ -2,7 +2,7 @@ from typing import Any, Callable, Union, Dict, List
 from dataclasses import dataclass
 import unittest
 import pprint
-import ujson
+import json
 
 from rest_api_tester.client.response_data import ResponseData
 from rest_api_tester import utils
@@ -31,13 +31,13 @@ class TestData:
     def request_data_json(self) -> Any:
         if not self.request_data:
             return None
-        return ujson.loads(self.request_data)
+        return json.loads(self.request_data)
 
     @property
     def expected_response_json(self) -> Any:
         if not self.expected_response:
             return None
-        return ujson.loads(self.expected_response)
+        return json.loads(self.expected_response)
 
 
 @dataclass
@@ -115,8 +115,8 @@ class TestCase(unittest.TestCase):
                     j=actual_response_dict, path=excluded_response_path, value=placeholder_text)
                 expected_response_dict = utils.json_update(
                     j=expected_response_dict, path=excluded_response_path, value=placeholder_text)
-            result.response.text = ujson.dumps(actual_response_dict)
-            result.test_data.expected_response = ujson.dumps(expected_response_dict)
+            result.response.text = json.dumps(actual_response_dict)
+            result.test_data.expected_response = json.dumps(expected_response_dict)
 
         try:
             # Check status
@@ -159,9 +159,9 @@ class TestCase(unittest.TestCase):
             if response_content_type == 'application/json':
                 actual_response = result.response.json
                 if isinstance(actual_response, list):
-                    self.assertListEqual(ujson.loads(expected_response), actual_response)
+                    self.assertListEqual(json.loads(expected_response), actual_response)
                 elif isinstance(actual_response, dict):
-                    self.assertDictEqual(ujson.loads(expected_response), actual_response)
+                    self.assertDictEqual(json.loads(expected_response), actual_response)
             else:
                 actual_response = result.response.text
                 self.assertEqual(expected_response, actual_response)
@@ -175,7 +175,7 @@ class TestCase(unittest.TestCase):
         print(f'\n\nUpdating test scenario {result.test_data.file_path}::{result.test_data.name}')
 
         with open(result.test_data.file_path, 'r') as f:
-            scenarios = ujson.loads(f.read())
+            scenarios = json.loads(f.read())
             scenario = scenarios[result.test_data.name]
             scenario['status'] = actual_status
             if options.update_headers:
@@ -195,20 +195,20 @@ class TestCase(unittest.TestCase):
                 )
                 if 'application/json' in (content_type or ''):
                     if result.test_data.response_json_modifiers:
-                        actual_response_dict = ujson.loads(actual_response)
+                        actual_response_dict = json.loads(actual_response)
                         for response_path in result.test_data.response_json_modifiers.keys():
                             actual_response_dict = utils.json_update(
                                 j=actual_response_dict, path=response_path, value=options.placeholder_text)
-                        actual_response = ujson.dumps(actual_response_dict)
+                        actual_response = json.dumps(actual_response_dict)
 
-                    scenario['response'] = ujson.loads(actual_response)
+                    scenario['response'] = json.loads(actual_response)
                 else:
                     scenario['response'] = actual_response
             else:
                 scenario.pop('response', None)
 
         with open(result.test_data.file_path, 'w+') as f:
-            f.write(ujson.dumps(scenarios, escape_forward_slashes=False, indent=4) + '\n')
+            f.write(json.dumps(scenarios, indent=4) + '\n')
 
     @staticmethod
     def _format_response(response: Union[str, None]) -> Any:
@@ -216,6 +216,6 @@ class TestCase(unittest.TestCase):
             return '<Empty Response>'
 
         try:
-            return pprint.pformat(ujson.loads(response))  # type: ignore
+            return pprint.pformat(json.loads(response))  # type: ignore
         except Exception:
             return response
