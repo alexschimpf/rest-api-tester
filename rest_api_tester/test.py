@@ -152,11 +152,15 @@ class TestCase(unittest.TestCase):
             raise
 
     def default_verifier(self, result: TestResult) -> None:
-        response_content_type = result.response.headers.get('content-type')
+        response_content_type = (
+            result.response.headers.get('Content-Type') or
+            result.response.headers.get('content-type') or
+            result.response.headers.get('CONTENT-TYPE')
+        )
 
         expected_response = result.test_data.expected_response
         if expected_response:
-            if response_content_type == 'application/json':
+            if 'application/json' in (response_content_type or ''):
                 actual_response = result.response.json
                 if isinstance(actual_response, list):
                     self.assertListEqual(json.loads(expected_response), actual_response)
