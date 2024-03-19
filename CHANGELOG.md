@@ -1,3 +1,10 @@
+## [4.0.4](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.3...v4.0.4) (2024-03-19)
+
+
+### Bug Fixes
+
+* Fixed content-type check in default_verifier ([fb154dc](https://github.com/alexschimpf/rest-api-tester/commit/fb154dc89c512eb60b92f955847bd326d6669dfc))
+
 ## [4.0.3](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.2...v4.0.3) (2024-03-15)
 
 ## [4.0.2](https://github.com/alexschimpf/rest-api-tester/compare/v4.0.1...v4.0.2) (2024-03-14)
