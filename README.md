@@ -85,13 +85,13 @@ class TestSomething(TestCase):
         "status": 200,
         "request": {
             "name": "something",
-            "alias": "$$$"
+            "alias": "???"
         },
         "response": {
-            "id": "$$$",
+            "id": "???",
             "name": "something",
-            "alias": "$$$",
-            "created_date": "$$$"
+            "alias": "???",
+            "created_date": "???"
         }
     }
 }
